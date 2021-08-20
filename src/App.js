@@ -4,6 +4,7 @@ import Headers from './components/Navbar/Headers';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/Route/PrivateRoute';
+import AddProduct from './pages/AddProduct';
 
 function App() {
 	return (
@@ -13,6 +14,7 @@ function App() {
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route exact path='/signin' component={Home} />
+					<Route exact path='/addProduct' component={AddProduct} />
 					<PrivateRoute exact path='/profile' component={Profile} />
 				</Switch>
 			</div>
