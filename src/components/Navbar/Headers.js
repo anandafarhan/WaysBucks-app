@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, Link } from 'react-router-dom';
 import { Navbar, Nav, Container, Button, Dropdown } from 'react-bootstrap';
 import { BiCartAlt, BiUserCircle, BiLogOutCircle } from 'react-icons/bi';
 import Logo from '../../assets/Logo.svg';
@@ -84,8 +84,13 @@ function Headers() {
 				</Dropdown.Toggle>
 				<Dropdown.Menu align='right'>
 					<Dropdown.Item>
-						<BiUserCircle className='mx-2 icons-img' size='2rem' />
-						Profile
+						<Link
+							to='/profile'
+							style={{ textDecoration: 'none', color: 'black' }}
+						>
+							<BiUserCircle className='mx-2 icons-img' size='2rem' />
+							Profile
+						</Link>
 					</Dropdown.Item>
 					<Dropdown.Item onClick={handleLogout}>
 						<BiLogOutCircle className='mx-2 icons-img' size='2rem' />
@@ -113,11 +118,13 @@ function Headers() {
 	//   const handleShowR = () => setShowR(true);
 	return (
 		<>
-			<Navbar collapseOnSelect expand='lg'>
+			<Navbar collapseOnSelect expand='lg' className='fixed-top' bg='white'>
 				<Container>
-					<Navbar.Brand href='#home'>
-						<img src={Logo} alt='...' width='70px' />
-					</Navbar.Brand>
+					<Link to='/'>
+						<Navbar.Brand>
+							<img src={Logo} alt='...' width='70px' />
+						</Navbar.Brand>
+					</Link>
 					<Navbar.Toggle aria-controls='responsive-navbar-nav' />
 					<Navbar.Collapse id='responsive-navbar-nav'>
 						<Nav className='me-auto'></Nav>
