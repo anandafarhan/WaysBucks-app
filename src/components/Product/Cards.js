@@ -12,7 +12,12 @@ function Cards(props) {
 
 	return (
 		<Card className='mx-1 my-2 card-overide'>
-			<Card.Img variant='top' />
+			<Card.Img
+				className='img-card'
+				variant='top'
+				src={`./assets/img/products/${props.img}`}
+				alt={props.product}
+			/>
 			<Card.Body>
 				<Card.Title>{props.product}</Card.Title>
 				<Card.Text className='fs-6'>

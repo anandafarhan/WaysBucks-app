@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 function LoginModal(props) {
+	const route = useHistory();
 	const [wrongCred, setCred] = useState(false);
 	const [formData, setFormData] = useState({
 		email: '',
@@ -20,10 +22,12 @@ function LoginModal(props) {
 		const success = () => {
 			window.localStorage.setItem('isLogedIn', true);
 			props.handleClose();
+			setCred(false);
 			setFormData({
 				email: '',
 				password: '',
 			});
+			route.push('/');
 		};
 		const fail = () => {
 			setCred(true);
