@@ -23,6 +23,7 @@ function RegisterModal(props) {
 			fullName: '',
 		});
 		props.handleClose();
+		window.localStorage.setItem('isLogedIn', true);
 	}
 
 	return (
