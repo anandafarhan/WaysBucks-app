@@ -5,7 +5,7 @@ import { BiCartAlt, BiUserCircle, BiLogOutCircle } from 'react-icons/bi';
 import Logo from '../../assets/Logo.svg';
 import Avatar from '../../assets/Avatar.svg';
 import LoginModal from '../Modal/LoginModal';
-// import RegisterModal from '../Modal/RegisterModal';
+import RegisterModal from '../Modal/RegisterModal';
 
 function Headers() {
 	const route = useHistory();
@@ -120,6 +120,11 @@ function Headers() {
 				handleClose={() => dispatch({ type: 'hideModalL' })}
 				switchModal={() => dispatch({ type: 'switchModal' })}
 				show={state.modalLogin}
+			/>
+			<RegisterModal
+				handleClose={() => dispatch({ type: 'hideModalR' })}
+				switchModal={() => dispatch({ type: 'switchModal' })}
+				show={state.modalRegister}
 			/>
 		</>
 	);
