@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/Route/PrivateRoute';
 import AddProduct from './pages/AddProduct';
+import AddTopping from './pages/AddTopping';
 
 function App() {
 	return (
@@ -15,6 +16,7 @@ function App() {
 					<Route exact path='/' component={Home} />
 					<Route exact path='/signin' component={Home} />
 					<Route exact path='/addProduct' component={AddProduct} />
+					<Route exact path='/addTopping' component={AddTopping} />
 					<PrivateRoute exact path='/profile' component={Profile} />
 				</Switch>
 			</div>

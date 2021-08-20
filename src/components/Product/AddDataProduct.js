@@ -54,13 +54,16 @@ function AddDataProduct(props) {
 					</Form.Group>
 					<div className='d-grid gap-2 mt-5'>
 						<Button variant='danger' className='bg-overide' type='submit'>
-							Add Product
+							Add {props.suffix}
 						</Button>
 					</div>
 				</Form>
 			</Col>
 			<Col md={5} className='text-center'>
-				<Image src='./assets/img/products/CleponCoffee.svg' width='80%'></Image>
+				<Image
+					src={`./assets/img/products/${props.suffix}.svg`}
+					width='80%'
+				></Image>
 			</Col>
 		</Row>
 	);
