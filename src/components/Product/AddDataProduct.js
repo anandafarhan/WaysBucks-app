@@ -54,7 +54,7 @@ function AddDataProduct(props) {
 					</Form.Group>
 					<div className='d-grid gap-2 mt-5'>
 						<Button variant='danger' className='bg-overide' type='submit'>
-							Add Product
+							Add {props.suffix}
 						</Button>
 					</div>
 				</Form>
