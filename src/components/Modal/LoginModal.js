@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
 function LoginModal(props) {
+	const [wrongCred, setCred] = useState(false);
 	const [formData, setFormData] = useState({
 		email: '',
 		password: '',
 	});
 
-	const handleChange = (e) => {
+	function handleChange(e) {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
-	};
-
-	const [wrongCred, setCred] = useState(false);
+	}
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -21,6 +20,10 @@ function LoginModal(props) {
 		const success = () => {
 			window.localStorage.setItem('isLogedIn', true);
 			props.handleClose();
+			setFormData({
+				email: '',
+				password: '',
+			});
 		};
 		const fail = () => {
 			setCred(true);
