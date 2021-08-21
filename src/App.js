@@ -7,6 +7,7 @@ import PrivateRoute from './components/Route/PrivateRoute';
 import AddProduct from './pages/AddProduct';
 import AddTopping from './pages/AddTopping';
 import Product from './pages/Product';
+import Cart from './pages/Cart';
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route exact path='/signin' component={Home} />
+					<Route exact path='/cart' component={Cart} />
 					<PrivateRoute exact path='/product/:id' component={Product} />
 					<PrivateRoute exact path='/addProduct' component={AddProduct} />
 					<PrivateRoute exact path='/addTopping' component={AddTopping} />
