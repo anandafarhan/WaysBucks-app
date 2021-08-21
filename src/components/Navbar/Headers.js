@@ -87,7 +87,7 @@ function Headers() {
 						style={{ position: 'relative', transform: 'translate(15px,-3px)' }}
 					/>
 				</Dropdown.Toggle>
-				<Dropdown.Menu align='right'>
+				<Dropdown.Menu align='end' className='shadow' style={{ border: 0 }}>
 					<Dropdown.Item>
 						<Link
 							to='/profile'
@@ -122,7 +122,12 @@ function Headers() {
 	//   const handleShowR = () => setShowR(true);
 	return (
 		<>
-			<Navbar collapseOnSelect expand='lg' className='fixed-top' bg='white'>
+			<Navbar
+				collapseOnSelect
+				expand='lg'
+				className='fixed-top shadow'
+				bg='white'
+			>
 				<Container>
 					<Link to='/'>
 						<Navbar.Brand>

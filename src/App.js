@@ -6,16 +6,17 @@ import Profile from './pages/Profile';
 import PrivateRoute from './components/Route/PrivateRoute';
 import AddProduct from './pages/AddProduct';
 import AddTopping from './pages/AddTopping';
+import Product from './pages/Product';
 
 function App() {
 	return (
 		<Router>
 			<Headers />
-			<div style={{ marginTop: '100px' }}>
+			<div style={{ marginTop: '120px' }}>
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route exact path='/signin' component={Home} />
-					<PrivateRoute exact path='/product/:id' component={Home} />
+					<PrivateRoute exact path='/product/:id' component={Product} />
 					<PrivateRoute exact path='/addProduct' component={AddProduct} />
 					<PrivateRoute exact path='/addTopping' component={AddTopping} />
 					<PrivateRoute exact path='/profile' component={Profile} />
