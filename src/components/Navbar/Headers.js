@@ -71,7 +71,12 @@ function Headers() {
 	);
 	const user = (
 		<>
-			<BiCartAlt className='mx-3 my-auto icons-img' size='3rem' />
+			<div className='position-relative mx-3 my-auto'>
+				<span className='position-absolute  top-0 start-100 translate-middle badge rounded-pill bg-danger'>
+					1<span className='visually-hidden'>product in cart</span>
+				</span>
+				<BiCartAlt className='icons-img' size='3rem'></BiCartAlt>
+			</div>
 			<Dropdown as={Nav.Item} className='ml-3'>
 				<Dropdown.Toggle as={Nav.Link}>
 					<img
@@ -79,7 +84,7 @@ function Headers() {
 						src={Avatar}
 						alt='user pic'
 						width='50px'
-						style={{ position: 'relative', transform: 'translate(0,0)' }}
+						style={{ position: 'relative', transform: 'translate(15px,-3px)' }}
 					/>
 				</Dropdown.Toggle>
 				<Dropdown.Menu align='right'>
