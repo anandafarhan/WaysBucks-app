@@ -15,8 +15,9 @@ function App() {
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route exact path='/signin' component={Home} />
-					<Route exact path='/addProduct' component={AddProduct} />
-					<Route exact path='/addTopping' component={AddTopping} />
+					<PrivateRoute exact path='/product/:id' component={Home} />
+					<PrivateRoute exact path='/addProduct' component={AddProduct} />
+					<PrivateRoute exact path='/addTopping' component={AddTopping} />
 					<PrivateRoute exact path='/profile' component={Profile} />
 				</Switch>
 			</div>

@@ -9,6 +9,7 @@ import RegisterModal from '../Modal/RegisterModal';
 
 function Headers() {
 	const route = useHistory();
+	const isLogedIn = window.localStorage.getItem('isLogedIn');
 
 	const initialState = {
 		modalLogin: false,
@@ -17,28 +18,27 @@ function Headers() {
 
 	function reducer(state, action) {
 		switch (action.type) {
-			case 'showModalL':
-				return { modalLogin: true };
-			case 'showModalR':
-				return { modalRegister: true };
-			case 'hideModalL':
-				return { modalLogin: false };
-			case 'hideModalR':
-				return { modalRegister: false };
-			case 'forceRender':
-				return {};
+			case 'ModalL':
+				return {
+					modalLogin: !state.modalLogin,
+				};
+			case 'ModalR':
+				return {
+					modalRegister: !state.modalRegister,
+				};
 			case 'switchModal':
 				return {
 					modalRegister: !state.modalRegister,
 					modalLogin: !state.modalLogin,
 				};
+			case 'forceRender':
+				return {};
 			default:
 				throw new Error();
 		}
 	}
 
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const isLogedIn = window.localStorage.getItem('isLogedIn');
 
 	function handleLogout() {
 		window.localStorage.setItem('isLogedIn', false);
@@ -52,7 +52,7 @@ function Headers() {
 				<Button
 					variant='outline-danger'
 					size='sm'
-					onClick={() => dispatch({ type: 'showModalL' })}
+					onClick={() => dispatch({ type: 'ModalL' })}
 				>
 					Login
 				</Button>
@@ -62,7 +62,7 @@ function Headers() {
 					variant='danger'
 					size='sm'
 					className='bg-overide'
-					onClick={() => dispatch({ type: 'showModalR' })}
+					onClick={() => dispatch({ type: 'ModalR' })}
 				>
 					Register
 				</Button>
@@ -102,11 +102,10 @@ function Headers() {
 	);
 
 	useEffect(() => {
-		if (
-			window.location.pathname === '/signin' &&
-			window.localStorage.getItem('isLogedIn') === 'false'
-		) {
-			dispatch({ type: 'showModalL' });
+		const pathName = window.location.pathname;
+		// dispatch({ type: 'forceRender' });
+		if (pathName === '/signin' && (!isLogedIn || isLogedIn === 'false')) {
+			dispatch({ type: 'ModalL' });
 		}
 	}, []);
 	//    const [showLogin, setShowL] = useState(false);
@@ -133,12 +132,12 @@ function Headers() {
 				</Container>
 			</Navbar>
 			<LoginModal
-				handleClose={() => dispatch({ type: 'hideModalL' })}
+				handleClose={() => dispatch({ type: 'ModalL' })}
 				switchModal={() => dispatch({ type: 'switchModal' })}
 				show={state.modalLogin}
 			/>
 			<RegisterModal
-				handleClose={() => dispatch({ type: 'hideModalR' })}
+				handleClose={() => dispatch({ type: 'ModalR' })}
 				switchModal={() => dispatch({ type: 'switchModal' })}
 				show={state.modalRegister}
 			/>

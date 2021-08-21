@@ -19,7 +19,7 @@
 
 .icons-img {
 	color: #bd0707;
-	size:5em;
+	size: 5em;
 }
 
 .modal-overide {
@@ -38,6 +38,7 @@
 	background-color: #f6dada;
 	color: #bd0707;
 	border: 0;
+	text-decoration: none;
 }
 
 .card-overide span {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+// import { Link } from 'react-router-dom';
 import Cards from './Cards';
 
 function Featured() {
@@ -13,6 +14,7 @@ function Featured() {
 					<Col key={data.id} md={3}>
 						<Cards
 							key={data.id}
+							dataId={data.id}
 							product={data.name}
 							price={data.price}
 							img={data.img}
