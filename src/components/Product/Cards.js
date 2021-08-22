@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Cards(props) {
-	const route = useHistory();
 	function formatPrice({ price }) {
 		return new Intl.NumberFormat('id-ID', {
 			style: 'currency',
@@ -15,7 +14,8 @@ function Cards(props) {
 	return (
 		<Card
 			className='mx-1 my-2 card-overide'
-			onClick={() => route.push(`/product/${props.dataId}`)}
+			as={Link}
+			to={`/product/${props.dataId}`}
 		>
 			<Card.Img
 				className='img-card'
