@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image } from 'react-bootstrap';
-import HeroImg from '../assets/Jumbotron.svg';
 
 function Hero() {
 	return (

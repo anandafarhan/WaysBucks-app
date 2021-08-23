@@ -14,6 +14,7 @@ import Loading from './components/Loading';
 
 function App() {
 	const [loading, setLoading] = useState(true);
+
 	async function init() {
 		const dataAllUser = await require('./data/Users.json');
 		const dataAllProduct = await require('./data/Products.json');

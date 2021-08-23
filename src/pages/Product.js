@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Row, Col, Image, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import Loading from '../components/Loading';
 import ToppingCard from '../components/Product/ToppingCard';
 import { getProduct } from '../config/server';
+import { AppContext } from '../context/AppContext';
 
 function Product() {
+	const [state, dispatch] = useContext(AppContext);
 	const [loading, setLoading] = useState(true);
 	const [product, setProduct] = useState({});
 	const [toppings, setToppings] = useState([]);
@@ -52,11 +54,21 @@ function Product() {
 		.map((selectedTopping) => selectedTopping.price)
 		.reduce((prev, curr) => prev + curr, product.price);
 
+	function handleAddtoCart() {
+		dispatch({
+			type: 'ADD_CART',
+			payload: {
+				...product,
+				subTotal,
+				toppings: selectedToppings,
+			},
+		});
+	}
+
 	return loading || !product || toppings.length < 1 ? (
 		<Loading />
 	) : (
 		<div className='d-block mx-auto' style={{ width: '70%' }}>
-			{console.log(checkedToppings, selectedToppingsId, selectedToppings)}
 			<Row>
 				<Col md={5} className='text-center'>
 					<Image
@@ -71,7 +83,7 @@ function Product() {
 						<h5 className='text-overide'>Topping</h5>
 						{toppings.map((topping) => {
 							return (
-								<Col md={3}>
+								<Col md={3} key={topping.id}>
 									<ToppingCard
 										topping={topping}
 										key={topping.id}
@@ -89,7 +101,11 @@ function Product() {
 								<h5 className='text-end'>{formatPrice(subTotal)}</h5>
 							</Col>
 							<div className='d-grid gap-2 mt-3'>
-								<Button variant='danger' className='bg-overide' type='submit'>
+								<Button
+									variant='danger'
+									className='bg-overide'
+									onClick={handleAddtoCart}
+								>
 									Add to Cart
 								</Button>
 							</div>

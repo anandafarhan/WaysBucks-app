@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
-import { BiCoffeeTogo, BiTrash, BiReceipt } from 'react-icons/bi';
+import React, { useState, useContext, useEffect } from 'react';
+import { Row, Col, Form, Button, Image, ToastBody } from 'react-bootstrap';
+import { BiSad, BiTrash, BiReceipt } from 'react-icons/bi';
+import { AppContext } from '../context/AppContext';
 
 function Cart(props) {
+	const [state, dispatch] = useContext(AppContext);
+	const { carts } = state;
 	const [formData, setFormData] = useState({
 		email: '',
 		fullName: '',
@@ -11,35 +14,127 @@ function Cart(props) {
 		address: '',
 	});
 
+	function formatPrice(price) {
+		return new Intl.NumberFormat('id-ID', {
+			style: 'currency',
+			currency: 'IDR',
+			minimumFractionDigits: 0,
+		}).format(price);
+	}
+
 	function handleChange(e) {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	}
 
-	function handleSubmit(e) {
-		e.preventDefault();
+	function handleRemoveCart(id) {
+		dispatch({
+			type: 'REMOVE_CART',
+			payload: id,
+		});
 	}
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (carts.length > 0) {
+			const transactionId = state.transaction.length + 1;
+			const date = new Date();
+			await dispatch({
+				type: 'ADD_TRANSACTION',
+				payload: {
+					transactionId: transactionId,
+					dateTime: date,
+					dataUser: formData,
+					products: [...carts],
+					status: 1,
+				},
+			});
+
+			dispatch({
+				type: 'CLEAR_CART',
+			});
+
+			setFormData({
+				email: '',
+				fullName: '',
+				phone: '',
+				postCode: '',
+				address: '',
+			});
+		}
+	};
+
+	const [total, setTotal] = useState(0);
+	useEffect(() => {
+		setTotal(
+			carts.map((product) => product.subTotal).reduce((a, b) => a + b, 0)
+		);
+	}, [carts]);
+
 	return (
 		<div className='d-block mx-auto' style={{ width: '70%' }}>
+			{console.log(state.transaction)}
 			<h2 className='text-overide'>My Cart</h2>
 			<Row>
 				<Col md={7} className='mt-4'>
 					<div className='border-bottom'>
 						<h6 className='text-overide'>Review Your Order</h6>
 					</div>
-					<div className='border-bottom'>
-						<Row>
-							<Col md={2}>
-								<BiCoffeeTogo size='5rem' />
-							</Col>
-							<Col md={8} className=''>
-								<h6 className='text-overide mt-3'>Ice Coffee Palm Sugar</h6>
-								<span className='text-overide'>Topping: Sugar Sugar Sugar</span>
-							</Col>
-							<Col md={2} className='text-end'>
-								<p className='text-overide mt-3 mb-0'>Rp. 31.000</p>
-								<BiTrash size='1.5rem' />
-							</Col>
-						</Row>
+					<div
+						className='border-bottom overflow-auto'
+						style={{
+							width: 'auto',
+							height: '260px',
+						}}
+					>
+						{carts.length < 1 ? (
+							<div
+								className='d-flex flex-column justify-content-center align-items-center text-overide'
+								style={{ width: '100%', height: '100%', opacity: '60%' }}
+							>
+								<BiSad size='6rem' />
+								<h5 className='fw-lighter'>It's quiet in here</h5>
+							</div>
+						) : (
+							carts.map((product, i) => (
+								<Row className='my-3' key={i}>
+									<Col md={2}>
+										<Image
+											src={`${process.env.PUBLIC_URL}/assets/img/products/${product.img}`}
+											style={{
+												width: '100px',
+												height: '100px',
+												objectFit: 'cover',
+												objectPosition: 'center',
+												borderRadius: '5px',
+											}}
+										/>
+									</Col>
+									<Col md={8}>
+										<h6 className='text-overide mt-3'>{product.name}</h6>
+										<div className='text-overide mt-3'>
+											Topping:{' '}
+											{product.toppings
+												.map((topping) => topping.name)
+												.join(', ')}
+										</div>
+									</Col>
+									<Col md={2} className='text-end'>
+										<p className='text-overide mt-3 mb-0'>
+											{formatPrice(product.subTotal)}
+										</p>
+										<div className='text-overide mt-2'>
+											<Button
+												variant='danger'
+												size='sm'
+												onClick={() => handleRemoveCart(i)}
+											>
+												<BiTrash size='1.5rem' />
+											</Button>
+										</div>
+									</Col>
+								</Row>
+							))
+						)}
 					</div>
 
 					<div>
@@ -54,8 +149,8 @@ function Cart(props) {
 									</Col>
 									<Col>
 										<div className='mt-3 text-end'>
-											<p className='text-overide mt-3'>Rp. 31.000</p>
-											<p className='text-overide'>2</p>
+											<p className='text-overide mt-3'>{formatPrice(total)}</p>
+											<p className='text-overide'>{carts.length}</p>
 										</div>
 									</Col>
 								</Row>
@@ -70,14 +165,14 @@ function Cart(props) {
 									<Col>
 										<div className='mt-3 text-end'>
 											<p className='text-overide mt-3'>
-												<strong>Rp. 31.000</strong>
+												<strong>{formatPrice(total)}</strong>
 											</p>
 										</div>
 									</Col>
 								</Row>
 							</Col>
 							<Col md={4}>
-								<label for='formFileLg'>
+								<label htmlFor='formFileLg'>
 									<div
 										className='d-flex flex-column mt-4 justify-content-center align-items-center'
 										style={{

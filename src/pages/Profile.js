@@ -1,9 +1,43 @@
-import React from 'react';
+import { getAllByTestId } from '@testing-library/react';
+import React, { useContext } from 'react';
 import { Row, Col, Image } from 'react-bootstrap';
+import { AppContext } from '../context/AppContext';
 
 function Profile() {
+	const [state, dispatch] = useContext(AppContext);
+	const transaction = state.transaction;
 	const fullName = window.localStorage.getItem('Full Name');
 	const email = window.localStorage.getItem('email');
+	function formatPrice(price) {
+		return new Intl.NumberFormat('id-ID', {
+			style: 'currency',
+			currency: 'IDR',
+			minimumFractionDigits: 0,
+		}).format(price);
+	}
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	];
+	const days = [
+		'Sunday',
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+	];
 	return (
 		<Row
 			className='mx-auto my-2 justify-content-between'
@@ -13,7 +47,11 @@ function Profile() {
 				<h2 className='text-overide my-4'>My Profile</h2>
 				<Row>
 					<Col md={5}>
-						<Image src='./assets/img/user/Avatar.svg' fluid />
+						<Image
+							src='./assets/img/user/Avatar.svg'
+							style={{ borderRadius: '10px' }}
+							fluid
+						/>
 					</Col>
 					<Col md={5}>
 						<Row className='mb-4'>
@@ -31,9 +69,96 @@ function Profile() {
 				<h2 className='text-overide my-4' style={{ color: '#613D2B' }}>
 					My Transaction
 				</h2>
-				<Row>
-					<Image src='./assets/img/Transaction.svg' />
-				</Row>
+				{transaction.map((trans, tid) => (
+					<Row
+						style={{ borderRadius: '10px', backgroundColor: '#F6DADA' }}
+						className='mb-3 p-3 border-box'
+						id='transaction'
+						key={getAllByTestId}
+					>
+						<Col
+							className='d-flex flex-column text-overide overflow-auto'
+							style={{
+								height: '250px',
+								justifyContent: trans.products.length <= 1 ? 'center' : '',
+							}}
+							md={9}
+						>
+							{trans.products.map((product, pid) => (
+								<Row id='product' key={pid}>
+									<Col md={3}>
+										<Image
+											src={`${process.env.PUBLIC_URL}/assets/img/products/${product.img}`}
+											style={{
+												width: '80px',
+												height: '100px',
+												objectFit: 'cover',
+												objectPosition: 'center',
+												borderRadius: '5px',
+											}}
+										/>
+									</Col>
+									<Col md={9}>
+										<h5>{product.name}</h5>
+										<p style={{ fontSize: '11px' }}>
+											<strong>{days[trans.dateTime.getDay()]}</strong>,{' '}
+											{trans.dateTime.getDate()}{' '}
+											{months[trans.dateTime.getMonth()]}{' '}
+											{trans.dateTime.getFullYear()}
+										</p>
+										<p className='fw-light mb-0' style={{ fontSize: '12px' }}>
+											<span className='fw-bold'>Topping: </span>
+											{product.toppings
+												.map((topping) => topping.name)
+												.join(', ')}
+										</p>
+										<p className='fw-light' style={{ fontSize: '12px' }}>
+											Price : {formatPrice(product.subTotal)}
+										</p>
+									</Col>
+								</Row>
+							))}
+						</Col>
+						<Col
+							md={3}
+							className='d-flex flex-column justify-content-evenly align-items-center'
+						>
+							<Image
+								src={`${process.env.PUBLIC_URL}/assets/img/Logo.svg`}
+								className='mb-2'
+								width='50px'
+							/>
+							<Image
+								src={`${process.env.PUBLIC_URL}/assets/img/qr-code.svg`}
+								className='mb-2'
+								width='100px'
+							/>
+							<div
+								style={{
+									fontSize: '12px',
+									width: '80px',
+									borderRadius: '5px',
+								}}
+								className='bg-warning p-1 mb-1 text-center'
+							>
+								Pending
+							</div>
+							<div
+								style={{ fontSize: '12px' }}
+								className='mb-1 text-overide text-nowrap'
+							>
+								<strong>
+									Sub Total :{' '}
+									{formatPrice(
+										trans.products
+											.map((product) => product.subTotal)
+											.reduce((a, b) => a + b, 0)
+									)}{' '}
+								</strong>
+							</div>
+						</Col>
+					</Row>
+				))}
 			</Col>
 		</Row>
 	);
