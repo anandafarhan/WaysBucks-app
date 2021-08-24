@@ -5,8 +5,14 @@ import { BiBasket, BiUserCircle, BiLogOutCircle } from 'react-icons/bi';
 import Avatar from '../../assets/Avatar.svg';
 import { AppContext } from '../../context/AppContext';
 
-function User({ handleLogout }) {
+function User() {
 	const [state, dispatch] = useContext(AppContext);
+
+	function handleLogout() {
+		dispatch({
+			type: 'LOGOUT',
+		});
+	}
 
 	return (
 		<>

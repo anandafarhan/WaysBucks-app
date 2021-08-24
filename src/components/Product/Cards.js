@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
 
 function Cards(props) {
+	const [state, dispatch] = useContext(AppContext);
+
 	function formatPrice({ price }) {
 		return new Intl.NumberFormat('id-ID', {
 			style: 'currency',

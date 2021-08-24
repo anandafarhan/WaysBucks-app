@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { loginUser } from '../../config/server';
+import { AppContext } from '../../context/AppContext';
 
 function LoginModal(props) {
 	const route = useHistory();
+	const [state, dispatch] = useContext(AppContext);
 	const [wrongCred, setCred] = useState(false);
 	const [formData, setFormData] = useState({
 		email: '',
@@ -14,13 +17,16 @@ function LoginModal(props) {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	}
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault();
-		const email = window.localStorage.getItem('email');
-		const password = window.localStorage.getItem('password');
+		const token = await loginUser(formData);
 
 		const success = () => {
-			window.localStorage.setItem('isLogedIn', true);
+			// window.localStorage.setItem('token', token);
+			dispatch({
+				type: 'LOGIN',
+				payload: token,
+			});
 			props.handleClose();
 			setCred(false);
 			setFormData({
@@ -29,6 +35,7 @@ function LoginModal(props) {
 			});
 			route.push('/');
 		};
+
 		const fail = () => {
 			setCred(true);
 			setFormData({
@@ -36,9 +43,7 @@ function LoginModal(props) {
 			});
 		};
 
-		email === formData.email && password === formData.password
-			? success()
-			: fail(e);
+		token ? success() : fail(e);
 	}
 	return (
 		<Modal

@@ -1,14 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Row, Col, Form, Button, Image, ToastBody } from 'react-bootstrap';
+import { Row, Col, Form, Button, Image } from 'react-bootstrap';
 import { BiSad, BiTrash, BiReceipt } from 'react-icons/bi';
+import { useHistory } from 'react-router-dom';
+import CartModal from '../components/Modal/CartModal';
 import { AppContext } from '../context/AppContext';
 
 function Cart(props) {
+	const route = useHistory();
 	const [state, dispatch] = useContext(AppContext);
 	const { carts } = state;
+	const [modalState, setModalState] = useState(false);
 	const [formData, setFormData] = useState({
 		email: '',
-		fullName: '',
+		name: '',
 		phone: '',
 		postCode: '',
 		address: '',
@@ -42,6 +46,7 @@ function Cart(props) {
 				type: 'ADD_TRANSACTION',
 				payload: {
 					transactionId: transactionId,
+					userId: state.user.id,
 					dateTime: date,
 					dataUser: formData,
 					products: [...carts],
@@ -49,13 +54,18 @@ function Cart(props) {
 				},
 			});
 
+			setModalState(true);
+			setTimeout(() => {
+				route.push('/profile');
+			}, 3000);
+
 			dispatch({
 				type: 'CLEAR_CART',
 			});
 
 			setFormData({
 				email: '',
-				fullName: '',
+				name: '',
 				phone: '',
 				postCode: '',
 				address: '',
@@ -204,7 +214,7 @@ function Cart(props) {
 						<Form.Group className='mb-3' controlId='FullName'>
 							<Form.Control
 								type='text'
-								name='fullName'
+								name='name'
 								placeholder='Full Name'
 								value={formData.fullName}
 								onChange={(e) => handleChange(e)}
@@ -264,6 +274,7 @@ function Cart(props) {
 					</Form>
 				</Col>
 			</Row>
+			<CartModal show={modalState} handleClose={() => setModalState(false)} />
 		</div>
 	);
 }

@@ -33,8 +33,8 @@ export async function registerUser(inputData) {
 			window.localStorage.getItem('dataAllUsers')
 		);
 		dataAllUser.push(inputData);
-		window.localStorage.setItem('dataAllUser', dataAllUser);
-		return console.log('Register user success', inputData);
+		window.localStorage.setItem('dataAllUsers', JSON.stringify(dataAllUser));
+		return inputData;
 	} catch (err) {
 		console.log('ERR_CONFIG REGISTER USER:', err);
 	}
@@ -45,15 +45,16 @@ export async function loginUser(inputData) {
 		const dataAllUser = await JSON.parse(
 			window.localStorage.getItem('dataAllUsers')
 		);
-		const currentUser = await dataAllUser.forEach((user) =>
-			user.email === inputData.email && user.password === inputData.password
-				? user
-				: function () {
-						throw new Error(`No user email and password match`);
-				  }
-		);
-		window.localStorage.setItem('currentUser', currentUser);
-		return console.log('Login success', currentUser);
+		let currentUser = null;
+		await dataAllUser.forEach((user) => {
+			if (
+				user.email === inputData.email &&
+				user.password === inputData.password
+			) {
+				currentUser = user;
+			}
+		});
+		return currentUser;
 	} catch (err) {
 		console.log('ERR_CONFIG LOGIN:', err);
 	}

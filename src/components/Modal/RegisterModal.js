@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { registerUser } from '../../config/server';
+import { AppContext } from '../../context/AppContext';
 
 function RegisterModal(props) {
+	const dataAllUsers = JSON.parse(localStorage.getItem('dataAllUsers'));
+	const [state, dispatch] = useContext(AppContext);
+	let newId = dataAllUsers.length + 1;
 	const [formData, setFormData] = useState({
+		id: newId,
 		email: '',
 		password: '',
-		fullName: '',
+		name: '',
+		role: 'user',
 	});
 
 	function handleChange(e) {
@@ -14,16 +21,19 @@ function RegisterModal(props) {
 
 	function handleSubmit(e) {
 		e.preventDefault();
-		window.localStorage.setItem('email', formData.email);
-		window.localStorage.setItem('password', formData.password);
-		window.localStorage.setItem('Full Name', formData.fullName);
+		registerUser(formData);
+
+		dispatch({
+			type: 'REGISTER',
+			payload: formData,
+		});
+
 		setFormData({
 			email: '',
 			password: '',
-			fullName: '',
+			name: '',
 		});
 		props.handleClose();
-		window.localStorage.setItem('isLogedIn', true);
 	}
 
 	return (
@@ -64,9 +74,9 @@ function RegisterModal(props) {
 					<Form.Group className='mb-3' controlId='FullName'>
 						<Form.Control
 							type='text'
-							name='fullName'
+							name='name'
 							placeholder='Full Name'
-							value={formData.fullName}
+							value={formData.name}
 							onChange={(e) => handleChange(e)}
 							className='input-overide'
 						/>

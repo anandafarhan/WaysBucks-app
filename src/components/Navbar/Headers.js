@@ -1,5 +1,5 @@
-import React, { useReducer, useEffect } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import React, { useReducer, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Logo from '../../assets/Logo.svg';
 import LoginModal from '../Modal/LoginModal';
@@ -7,10 +7,10 @@ import RegisterModal from '../Modal/RegisterModal';
 import User from './User';
 import Guest from './Guest';
 import Admin from './Admin';
+import { AppContext } from '../../context/AppContext';
 
 function Headers() {
-	const route = useHistory();
-	const isLogedIn = window.localStorage.getItem('isLogedIn');
+	const [state] = useContext(AppContext);
 
 	const initialState = {
 		modalLogin: false,
@@ -39,24 +39,21 @@ function Headers() {
 		}
 	}
 
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [modalState, modalDispatch] = useReducer(reducer, initialState);
 
-	function handleLogout() {
-		window.localStorage.setItem('isLogedIn', false);
-		dispatch({ type: 'forceRender' });
-		route.push('/');
-	}
-
-	useEffect(() => {
-		// const dataAllUser = require('../../data/Users.json');
-		// console.log('dataAllUser :', dataAllUser);
-		// window.localStorage.setItem();
-		const pathName = window.location.pathname;
-		// dispatch({ type: 'forceRender' });
-		if (pathName === '/signin' && (!isLogedIn || isLogedIn === 'false')) {
-			dispatch({ type: 'ModalL' });
+	const navStatus = () => {
+		if (!state.isLogin) {
+			return <Guest dispatch={modalDispatch} />;
 		}
-	}, []);
+		switch (state.user.role) {
+			case 'admin':
+				return <Admin />;
+			case 'user':
+				return <User />;
+			default:
+				throw new Error();
+		}
+	};
 
 	return (
 		<>
@@ -76,24 +73,25 @@ function Headers() {
 					<Navbar.Collapse id='responsive-navbar-nav'>
 						<Nav className='me-auto'></Nav>
 						<Nav>
-							{isLogedIn === 'true' ? (
+							{navStatus()}
+							{/* {isLogedIn === 'true' ? (
 								<User handleLogout={handleLogout} />
 							) : (
 								<Guest dispatch={dispatch} />
-							)}
+							)} */}
 						</Nav>
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
 			<LoginModal
-				handleClose={() => dispatch({ type: 'ModalL' })}
-				switchModal={() => dispatch({ type: 'switchModal' })}
-				show={state.modalLogin}
+				handleClose={() => modalDispatch({ type: 'ModalL' })}
+				switchModal={() => modalDispatch({ type: 'switchModal' })}
+				show={modalState.modalLogin}
 			/>
 			<RegisterModal
-				handleClose={() => dispatch({ type: 'ModalR' })}
-				switchModal={() => dispatch({ type: 'switchModal' })}
-				show={state.modalRegister}
+				handleClose={() => modalDispatch({ type: 'ModalR' })}
+				switchModal={() => modalDispatch({ type: 'switchModal' })}
+				show={modalState.modalRegister}
 			/>
 		</>
 	);

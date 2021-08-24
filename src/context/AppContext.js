@@ -41,7 +41,7 @@ const reducer = (state, action) => {
 			};
 
 		case 'LOGIN':
-			localStorage.setItem('token', action.payload.token);
+			localStorage.setItem('token', JSON.stringify(action.payload));
 			return {
 				...state,
 				isLogin: true,
@@ -56,7 +56,7 @@ const reducer = (state, action) => {
 				},
 			};
 
-		case 'USER_LOADED':
+		case 'LOAD_USER':
 			return {
 				...state,
 				isLogin: true,
@@ -72,7 +72,7 @@ const reducer = (state, action) => {
 			};
 
 		case 'REGISTER':
-			localStorage.setItem('token', action.payload.token);
+			localStorage.setItem('token', JSON.stringify(action.payload));
 			return {
 				...state,
 				isLogin: true,

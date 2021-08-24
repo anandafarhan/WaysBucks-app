@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Dropdown, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import {
@@ -7,16 +7,29 @@ import {
 	BiLogOutCircle,
 	BiCoffeeTogo,
 	BiAdjust,
+	BiTransferAlt,
 } from 'react-icons/bi';
 import Avatar from '../../assets/Avatar.svg';
+import { AppContext } from '../../context/AppContext';
 
-function Admin({ handleLogout }) {
+function Admin() {
+	const [state, dispatch] = useContext(AppContext);
+
+	function handleLogout() {
+		dispatch({
+			type: 'LOGOUT',
+		});
+	}
+
 	return (
 		<>
 			<div className='position-relative mx-3 my-auto'>
-				<span className='position-absolute  top-0 start-100 translate-middle badge rounded-pill bg-danger'>
-					1<span className='visually-hidden'>product in cart</span>
-				</span>
+				{state.carts.length > 0 && (
+					<span className='position-absolute  top-0 start-100 translate-middle badge rounded-pill bg-danger'>
+						{state.carts.length}
+						<span className='visually-hidden'>product in cart</span>
+					</span>
+				)}
 				<Link to='/cart'>
 					<BiBasket className='icons-img' size='3rem'></BiBasket>
 				</Link>
@@ -39,6 +52,10 @@ function Admin({ handleLogout }) {
 					<Dropdown.Item as={Link} to='/addTopping'>
 						<BiAdjust className='icons-img' size='2rem' />
 						Add Topping
+					</Dropdown.Item>
+					<Dropdown.Item as={Link} to='/transaction'>
+						<BiTransferAlt className='icons-img' size='2rem' />
+						Income Transaction
 					</Dropdown.Item>
 					<Dropdown.Divider />
 					<Dropdown.Item as={Link} to='/profile'>
