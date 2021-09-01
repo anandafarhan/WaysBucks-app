@@ -38,7 +38,9 @@
 	background-color: #f6dada;
 	color: #bd0707;
 	border: 0;
+	border-radius: 10px;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .card-overide span {

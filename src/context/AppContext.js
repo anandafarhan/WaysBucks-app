@@ -4,6 +4,8 @@ export const AppContext = createContext();
 
 const initialState = {
 	isLogin: false,
+	modalLogin: false,
+	modalRegister: false,
 	carts: [],
 	transaction: [],
 };
@@ -95,6 +97,23 @@ const reducer = (state, action) => {
 				isLogin: false,
 				isLoading: false,
 				user: null,
+			};
+
+		case 'MODAL_LOGIN':
+			return {
+				...state,
+				modalLogin: !state.modalLogin,
+			};
+		case 'MODAL_REGISTER':
+			return {
+				...state,
+				modalRegister: !state.modalRegister,
+			};
+		case 'SWITCH_MODAL':
+			return {
+				...state,
+				modalRegister: !state.modalRegister,
+				modalLogin: !state.modalLogin,
 			};
 
 		default:

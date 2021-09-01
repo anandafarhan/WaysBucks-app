@@ -37,7 +37,7 @@ function User() {
 						style={{ position: 'relative', transform: 'translate(15px,-3px)' }}
 					/>
 				</Dropdown.Toggle>
-				<Dropdown.Menu align='end' className='shadow' style={{ border: 0 }}>
+				<Dropdown.Menu align='end' className='shadow-sm' style={{ border: 0 }}>
 					<Dropdown.Item as={Link} to='/profile'>
 						<BiUserCircle className='icons-img' size='2rem' />
 						Profile

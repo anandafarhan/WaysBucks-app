@@ -40,36 +40,57 @@ function Cart(props) {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (carts.length > 0) {
-			const transactionId = state.transaction.length + 1;
-			const date = new Date();
-			await dispatch({
-				type: 'ADD_TRANSACTION',
-				payload: {
-					transactionId: transactionId,
-					userId: state.user.id,
-					dateTime: date,
-					dataUser: formData,
-					products: [...carts],
-					status: 1,
-				},
+			// const transactionId = state.transaction.length + 1;
+			// const date = new Date();
+			// await dispatch({
+			// 	type: 'ADD_TRANSACTION',
+			// 	payload: {
+			// 		transactionId: transactionId,
+			// 		userId: state.user.id,
+			// 		dateTime: date,
+			// 		dataUser: formData,
+			// 		products: [...carts],
+			// 		status: 1,
+			// 	},
+			// });
+
+			const transactionProducts = [];
+			console.log(carts);
+			carts.forEach((product) => {
+				const transactionToppings = [];
+				product.toppings.forEach((topping) =>
+					transactionToppings.push({
+						toppingId: topping.id,
+					})
+				);
+				transactionProducts.push({
+					productId: product.id,
+					transactionToppings,
+				});
 			});
 
-			setModalState(true);
-			setTimeout(() => {
-				route.push('/profile');
-			}, 3000);
-
-			dispatch({
-				type: 'CLEAR_CART',
+			const body = JSON.stringify({
+				...formData,
+				transactionProducts,
 			});
+			console.log(body);
 
-			setFormData({
-				email: '',
-				name: '',
-				phone: '',
-				postCode: '',
-				address: '',
-			});
+			// setModalState(true);
+			// setTimeout(() => {
+			// 	route.push('/profile');
+			// }, 3000);
+
+			// dispatch({
+			// 	type: 'CLEAR_CART',
+			// });
+
+			// setFormData({
+			// 	email: '',
+			// 	name: '',
+			// 	phone: '',
+			// 	postCode: '',
+			// 	address: '',
+			// });
 		}
 	};
 

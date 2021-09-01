@@ -10,40 +10,40 @@ import Admin from './Admin';
 import { AppContext } from '../../context/AppContext';
 
 function Headers() {
-	const [state] = useContext(AppContext);
+	const [state, dispatch] = useContext(AppContext);
 
-	const initialState = {
-		modalLogin: false,
-		modalRegister: false,
-	};
+	// const initialState = {
+	// 	modalLogin: false,
+	// 	modalRegister: false,
+	// };
 
-	function reducer(state, action) {
-		switch (action.type) {
-			case 'ModalL':
-				return {
-					modalLogin: !state.modalLogin,
-				};
-			case 'ModalR':
-				return {
-					modalRegister: !state.modalRegister,
-				};
-			case 'switchModal':
-				return {
-					modalRegister: !state.modalRegister,
-					modalLogin: !state.modalLogin,
-				};
-			case 'forceRender':
-				return {};
-			default:
-				throw new Error();
-		}
-	}
+	// function reducer(state, action) {
+	// 	switch (action.type) {
+	// 		case 'ModalL':
+	// 			return {
+	// 				modalLogin: !state.modalLogin,
+	// 			};
+	// 		case 'ModalR':
+	// 			return {
+	// 				modalRegister: !state.modalRegister,
+	// 			};
+	// 		case 'switchModal':
+	// 			return {
+	// 				modalRegister: !state.modalRegister,
+	// 				modalLogin: !state.modalLogin,
+	// 			};
+	// 		case 'forceRender':
+	// 			return {};
+	// 		default:
+	// 			throw new Error();
+	// 	}
+	// }
 
-	const [modalState, modalDispatch] = useReducer(reducer, initialState);
+	// const [modalState, modalDispatch] = useReducer(reducer, initialState);
 
 	const navStatus = () => {
 		if (!state.isLogin) {
-			return <Guest dispatch={modalDispatch} />;
+			return <Guest dispatch={dispatch} />;
 		}
 		switch (state.user.role) {
 			case 'admin':
@@ -60,7 +60,7 @@ function Headers() {
 			<Navbar
 				collapseOnSelect
 				expand='lg'
-				className='fixed-top shadow'
+				className='fixed-top shadow-sm'
 				bg='white'
 			>
 				<Container>
@@ -84,14 +84,14 @@ function Headers() {
 				</Container>
 			</Navbar>
 			<LoginModal
-				handleClose={() => modalDispatch({ type: 'ModalL' })}
-				switchModal={() => modalDispatch({ type: 'switchModal' })}
-				show={modalState.modalLogin}
+				handleClose={() => dispatch({ type: 'MODAL_LOGIN' })}
+				switchModal={() => dispatch({ type: 'SWITCH_MODAL' })}
+				show={state.modalLogin}
 			/>
 			<RegisterModal
-				handleClose={() => modalDispatch({ type: 'ModalR' })}
-				switchModal={() => modalDispatch({ type: 'switchModal' })}
-				show={modalState.modalRegister}
+				handleClose={() => dispatch({ type: 'MODAL_REGISTER' })}
+				switchModal={() => dispatch({ type: 'SWITCH_MODAL' })}
+				show={state.modalRegister}
 			/>
 		</>
 	);

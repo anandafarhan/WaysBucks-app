@@ -12,6 +12,22 @@ function Transaction() {
 		}).format(price);
 	}
 
+	function handleApprove(props) {
+		state.transaction.forEach((trans) => {
+			if (trans.transactionId === props) {
+				console.log('TransId ', props, ' Approved');
+			}
+		});
+	}
+
+	function handleDecline(props) {
+		state.transaction.forEach((trans) => {
+			if (trans.transactionId === props) {
+				console.log('TransId ', props, ' Declined');
+			}
+		});
+	}
+
 	return (
 		<div className='d-block mx-auto' style={{ width: '70%' }}>
 			<h2 className='text-overide'>Income Transaction</h2>
@@ -43,10 +59,18 @@ function Transaction() {
 							</td>
 							<td className='text-warning'>Waiting Approval</td>
 							<td className='d-flex justify-content-evenly'>
-								<Button variant='danger' size='sm'>
+								<Button
+									variant='danger'
+									size='sm'
+									onClick={() => handleDecline(trans.transactionId)}
+								>
 									Decline
 								</Button>
-								<Button variant='success' size='sm'>
+								<Button
+									variant='success'
+									size='sm'
+									onClick={() => handleApprove(trans.transactionId)}
+								>
 									Approve
 								</Button>
 							</td>

@@ -9,7 +9,7 @@ function Guest({ dispatch }) {
 					variant='outline-danger'
 					size='sm'
 					style={{ width: '100px' }}
-					onClick={() => dispatch({ type: 'ModalL' })}
+					onClick={() => dispatch({ type: 'MODAL_LOGIN' })}
 				>
 					Login
 				</Button>
@@ -20,7 +20,7 @@ function Guest({ dispatch }) {
 					size='sm'
 					className='bg-overide'
 					style={{ width: '100px' }}
-					onClick={() => dispatch({ type: 'ModalR' })}
+					onClick={() => dispatch({ type: 'MODAL_REGISTER' })}
 				>
 					Register
 				</Button>
