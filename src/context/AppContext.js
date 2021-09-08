@@ -3,11 +3,11 @@ import { createContext, useReducer } from 'react';
 export const AppContext = createContext();
 
 const initialState = {
+	isLoading: true,
 	isLogin: false,
 	modalLogin: false,
 	modalRegister: false,
 	carts: [],
-	transaction: [],
 };
 
 const reducer = (state, action) => {
@@ -34,23 +34,30 @@ const reducer = (state, action) => {
 				carts: [],
 			};
 
-		case 'ADD_TRANSACTION':
-			const transaction = [...state.transaction];
-			transaction.push(action.payload);
-			return {
-				...state,
-				transaction: [...transaction],
-			};
-
-		case 'LOGIN':
-			localStorage.setItem('token', JSON.stringify(action.payload));
+		case 'REGISTER':
+			localStorage.setItem('token', action.payload.token);
 			return {
 				...state,
 				isLogin: true,
 				isLoading: false,
 				user: {
 					id: action.payload.id,
-					name: action.payload.name,
+					name: action.payload.fullName,
+					email: action.payload.email,
+					role: action.payload.role,
+					avatar: null,
+				},
+			};
+
+		case 'LOGIN':
+			localStorage.setItem('token', action.payload.token);
+			return {
+				...state,
+				isLogin: true,
+				isLoading: false,
+				user: {
+					id: action.payload.id,
+					name: action.payload.fullName,
 					email: action.payload.email,
 					role: action.payload.role,
 					avatar:
@@ -65,7 +72,7 @@ const reducer = (state, action) => {
 				isLoading: false,
 				user: {
 					id: action.payload.id,
-					name: action.payload.name,
+					name: action.payload.fullName,
 					email: action.payload.email,
 					role: action.payload.role,
 					avatar:
@@ -73,22 +80,15 @@ const reducer = (state, action) => {
 				},
 			};
 
-		case 'REGISTER':
-			localStorage.setItem('token', JSON.stringify(action.payload));
+		case 'AUTH_ERROR':
+			localStorage.removeItem('token');
 			return {
 				...state,
-				isLogin: true,
+				isLogin: false,
 				isLoading: false,
-				user: {
-					id: action.payload.id,
-					name: action.payload.name,
-					email: action.payload.email,
-					role: action.payload.role,
-					avatar: null,
-				},
+				user: null,
 			};
 
-		case 'AUTH_ERROR':
 		case 'LOGOUT':
 			localStorage.removeItem('token');
 
@@ -97,6 +97,7 @@ const reducer = (state, action) => {
 				isLogin: false,
 				isLoading: false,
 				user: null,
+				carts: [],
 			};
 
 		case 'MODAL_LOGIN':
@@ -114,6 +115,17 @@ const reducer = (state, action) => {
 				...state,
 				modalRegister: !state.modalRegister,
 				modalLogin: !state.modalLogin,
+			};
+
+		case 'IS_LOADING_TRUE':
+			return {
+				...state,
+				isLoading: true,
+			};
+		case 'IS_LOADING_FALSE':
+			return {
+				...state,
+				isLoading: false,
 			};
 
 		default:

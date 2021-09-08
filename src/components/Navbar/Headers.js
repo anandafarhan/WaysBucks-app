@@ -12,39 +12,11 @@ import { AppContext } from '../../context/AppContext';
 function Headers() {
 	const [state, dispatch] = useContext(AppContext);
 
-	// const initialState = {
-	// 	modalLogin: false,
-	// 	modalRegister: false,
-	// };
-
-	// function reducer(state, action) {
-	// 	switch (action.type) {
-	// 		case 'ModalL':
-	// 			return {
-	// 				modalLogin: !state.modalLogin,
-	// 			};
-	// 		case 'ModalR':
-	// 			return {
-	// 				modalRegister: !state.modalRegister,
-	// 			};
-	// 		case 'switchModal':
-	// 			return {
-	// 				modalRegister: !state.modalRegister,
-	// 				modalLogin: !state.modalLogin,
-	// 			};
-	// 		case 'forceRender':
-	// 			return {};
-	// 		default:
-	// 			throw new Error();
-	// 	}
-	// }
-
-	// const [modalState, modalDispatch] = useReducer(reducer, initialState);
-
 	const navStatus = () => {
 		if (!state.isLogin) {
 			return <Guest dispatch={dispatch} />;
 		}
+		console.log(state.user.role);
 		switch (state.user.role) {
 			case 'admin':
 				return <Admin />;
@@ -57,30 +29,18 @@ function Headers() {
 
 	return (
 		<>
-			<Navbar
-				collapseOnSelect
-				expand='lg'
-				className='fixed-top shadow-sm'
-				bg='white'
-			>
-				<Container>
+			<Navbar collapseOnSelect expand='lg' className='fixed-top shadow-sm' bg='white'>
+				<Container className='d-flex justify-content-between'>
 					<Link to='/'>
 						<Navbar.Brand>
-							<img src={Logo} alt='...' width='70px' />
+							<img
+								src={`${process.env.PUBLIC_URL}/assets/img/Logo.svg`}
+								alt='Waysbucks'
+								width='70px'
+							/>
 						</Navbar.Brand>
 					</Link>
-					<Navbar.Toggle aria-controls='responsive-navbar-nav' />
-					<Navbar.Collapse id='responsive-navbar-nav'>
-						<Nav className='me-auto'></Nav>
-						<Nav>
-							{navStatus()}
-							{/* {isLogedIn === 'true' ? (
-								<User handleLogout={handleLogout} />
-							) : (
-								<Guest dispatch={dispatch} />
-							)} */}
-						</Nav>
-					</Navbar.Collapse>
+					{navStatus()}
 				</Container>
 			</Navbar>
 			<LoginModal

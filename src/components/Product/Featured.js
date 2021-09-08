@@ -19,22 +19,27 @@ function Featured() {
 	return loading || !products ? (
 		<Loading />
 	) : (
-		<div className='d-block mx-auto' style={{ width: '70%' }}>
-			<h1 className='text-overide'>Let's order</h1>
-			<Row>
-				{products?.map((data) => (
-					<Col key={data.id} md={3}>
-						<Cards
-							key={data.id}
-							dataId={data.id}
-							product={data.name}
-							price={data.price}
-							img={data.img}
-						/>
-					</Col>
-				))}
-			</Row>
-		</div>
+		<>
+			<span className='anchor' id='featured'></span>
+			<div className='d-block mx-auto' style={{ width: '70%' }}>
+				<h1 className='text-overide'>Let's order</h1>
+				<Row>
+					{products.length < 1
+						? null
+						: products.map((data) => (
+								<Col key={data.id} md={3}>
+									<Cards
+										key={data.id}
+										dataId={data.id}
+										product={data.name}
+										price={data.price}
+										image={data.image}
+									/>
+								</Col>
+						  ))}
+				</Row>
+			</div>
+		</>
 	);
 }
 

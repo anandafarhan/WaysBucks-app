@@ -1,9 +1,72 @@
+.anchor {
+	display: block;
+	scroll-margin-top: 90px;
+	visibility: hidden;
+}
+
 .bg-overide {
+	background-color: #bd0707;
+}
+
+.bg-overide-2 {
+	background-color: #f6dada;
+}
+
+.btn-overide {
+	border: 0;
+	background-color: #bd0707;
+}
+
+.btn-overide:hover {
+	background-color: #bd0707;
+}
+
+.btn-overide:focus {
 	background-color: #bd0707;
 }
 
 .text-overide {
 	color: #bd0707;
+}
+
+.text-overide-2 {
+	color: #974a4a;
+}
+
+.text-wa {
+	font-weight: 500;
+	color: #ff9900;
+}
+
+.text-otw {
+	font-weight: 500;
+	color: #00d1ff;
+}
+
+.text-scs {
+	font-weight: 500;
+	color: #78a85a;
+}
+
+.text-cancel {
+	font-weight: 500;
+	color: #e83939;
+}
+
+.bg-wa {
+	background-color: #ffdaa2;
+}
+
+.bg-otw {
+	background-color: #b4eefc;
+}
+
+.bg-scs {
+	background-color: #d6f3c6;
+}
+
+.bg-cancel {
+	background-color: #fcb4b4;
 }
 
 .input-overide {

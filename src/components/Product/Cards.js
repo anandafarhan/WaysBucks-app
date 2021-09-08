@@ -25,19 +25,19 @@ function Cards(props) {
 
 	return (
 		<Card
-			className='mx-1 my-2 card-overide shadow'
+			className='mx-1 my-3 card-overide'
+			style={{ filter: 'drop-shadow(0px 5px 3px rgba(200,200,200,70%))' }}
 			onClick={() => handleClick(props.dataId)}
 		>
 			<Card.Img
-				className='img-card'
+				className='img-card bg-white'
+				style={{ borderRadius: '10px' }}
 				variant='top'
-				src={`./assets/img/products/${props.img}`}
+				src={props.image}
 				alt={props.product}
 			/>
 			<Card.Body>
-				<Card.Title style={{ textDecoration: 'none' }}>
-					{props.product}
-				</Card.Title>
+				<Card.Title style={{ textDecoration: 'none' }}>{props.product}</Card.Title>
 				<Card.Text className='fs-6' style={{ textDecoration: 'none' }}>
 					<span>{formatPrice(props)}</span>
 				</Card.Text>

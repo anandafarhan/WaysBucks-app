@@ -1,17 +1,13 @@
 import { Card } from 'react-bootstrap';
 
 function ToppingCard({ ...props }) {
-	const { id, name, imgUrl } = props.topping;
+	const { id, name, image } = props.topping;
 
 	return (
 		<Card border='white' className='my-1'>
 			<Card.Body>
 				<label className='block-check'>
-					<img
-						src={`../assets/img/toppings/${imgUrl}`}
-						alt={name}
-						className='img-topping'
-					/>
+					<img src={image} alt={name} className='img-topping' />
 					<input
 						type='checkbox'
 						id={id}

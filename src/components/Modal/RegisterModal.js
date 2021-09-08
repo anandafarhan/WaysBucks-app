@@ -1,53 +1,68 @@
 import React, { useState, useContext } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import { registerUser } from '../../config/server';
 import { AppContext } from '../../context/AppContext';
 
 function RegisterModal(props) {
-	const dataAllUsers = JSON.parse(localStorage.getItem('dataAllUsers'));
+	const router = useHistory();
 	const [state, dispatch] = useContext(AppContext);
-	let newId = dataAllUsers.length + 1;
+	const [failed, setFailed] = useState({
+		status: false,
+		message: '',
+		errors: '',
+	});
 	const [formData, setFormData] = useState({
-		id: newId,
 		email: '',
 		password: '',
-		name: '',
-		role: 'user',
+		fullName: '',
 	});
 
 	function handleChange(e) {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	}
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault();
-		registerUser(formData);
+		const response = await registerUser(formData);
 
-		dispatch({
-			type: 'REGISTER',
-			payload: formData,
-		});
-
-		setFormData({
-			email: '',
-			password: '',
-			name: '',
-		});
-		props.handleClose();
+		if (response.status === 201) {
+			setFailed({ status: false, message: '', errors: '' });
+			dispatch({
+				type: 'REGISTER',
+				payload: response,
+			});
+			setFormData({
+				email: '',
+				password: '',
+				fullName: '',
+			});
+			props.handleClose();
+			router.push('/');
+		} else {
+			setFailed({
+				status: true,
+				message: response.data.message,
+				errors: response.data.errors,
+			});
+		}
 	}
 
 	return (
-		<Modal
-			show={props.show}
-			onHide={props.handleClose}
-			dialogClassName='modal-overide'
-			centered
-		>
+		<Modal show={props.show} onHide={props.handleClose} dialogClassName='modal-overide' centered>
 			<Modal.Body>
 				<Modal.Title className='text-overide'>
 					<strong>Register</strong>
 				</Modal.Title>
 				<br />
+				<Alert
+					variant='danger'
+					style={failed.status ? { display: 'block', fontSize: '15px' } : { display: 'none' }}
+				>
+					{failed.message}
+					<br />
+					{failed.errors}
+				</Alert>
 				<Form onSubmit={(e) => handleSubmit(e)}>
 					<Form.Group className='mb-3' controlId='Email'>
 						<Form.Control
@@ -74,7 +89,7 @@ function RegisterModal(props) {
 					<Form.Group className='mb-3' controlId='FullName'>
 						<Form.Control
 							type='text'
-							name='name'
+							name='fullName'
 							placeholder='Full Name'
 							value={formData.name}
 							onChange={(e) => handleChange(e)}
@@ -82,7 +97,7 @@ function RegisterModal(props) {
 						/>
 					</Form.Group>
 					<div className='d-grid gap-2 my-3'>
-						<Button variant='danger' className='bg-overide' type='submit'>
+						<Button variant='danger' className='bg-overide' type='submit' block>
 							Register
 						</Button>
 					</div>
