@@ -68,6 +68,8 @@ function Product() {
 		});
 	}
 
+	// console.log(state.carts);
+
 	useEffect(() => {
 		loadProduct();
 		// eslint-disable-next-line react-hooks/exhaustive-deps

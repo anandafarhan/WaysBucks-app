@@ -18,12 +18,38 @@ const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case 'ADD_CART':
-			const addedCarts = [...state.carts];
-			addedCarts.push(action.payload);
-			return {
-				...state,
-				carts: [...addedCarts],
-			};
+			const isExist = state.carts.find(
+				(product) =>
+					JSON.stringify(product.id + product.toppings) ===
+					JSON.stringify(action.payload.id + action.payload.toppings)
+			);
+			if (isExist) {
+				return {
+					...state,
+					carts: state.carts.map((product) => {
+						const matchedArray =
+							product.toppings.length < 1
+								? true
+								: isArrMatch(product.toppings, action.payload.toppings);
+						if (product.id === action.payload.id && matchedArray) {
+							return {
+								...product,
+								qty: product.qty < 50 ? product.qty + 1 : product.qty,
+								subTotal: (product.qty < 50 ? product.qty + 1 : product.qty) * product.initialPrice,
+							};
+						} else {
+							return product;
+						}
+					}),
+				};
+			} else {
+				const addedCarts = [...state.carts];
+				addedCarts.push(action.payload);
+				return {
+					...state,
+					carts: [...addedCarts],
+				};
+			}
 
 		case 'DECREASE_QTY':
 			return {
