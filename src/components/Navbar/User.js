@@ -48,23 +48,23 @@ function User() {
 								style={{ position: 'relative', border: '2px solid #bd0707' }}
 							/>
 						</Dropdown.Toggle>
-						<Dropdown.Menu align='end' className='shadow-sm' style={{ border: 0 }}>
+						<Dropdown.Menu align='end'>
 							<Dropdown.Item as={Link} to='/profile'>
 								<img
 									src={`${process.env.PUBLIC_URL}/assets/img/icons/user.svg`}
-									className='icons-img'
+									className='icons-img mx-3'
 									width='30rem'
 									alt='Profile'
-								/>{' '}
+								/>
 								Profile
 							</Dropdown.Item>
 							<Dropdown.Item onClick={handleLogout}>
 								<img
 									src={`${process.env.PUBLIC_URL}/assets/img/icons/logout.svg`}
-									className='icons-img text-overide'
+									className='icons-img mx-3'
 									width='30rem'
 									alt='Logout'
-								/>{' '}
+								/>
 								Logout
 							</Dropdown.Item>
 						</Dropdown.Menu>

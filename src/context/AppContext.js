@@ -2,8 +2,13 @@ import { createContext, useReducer } from 'react';
 
 export const AppContext = createContext();
 
+function isArrMatch(a, b) {
+	let match = JSON.stringify(a) === JSON.stringify(b);
+	return match;
+}
+
 const initialState = {
-	isLoading: true,
+	isLoading: false,
 	isLogin: false,
 	modalLogin: false,
 	modalRegister: false,
@@ -18,6 +23,68 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				carts: [...addedCarts],
+			};
+
+		case 'DECREASE_QTY':
+			return {
+				...state,
+				carts: state.carts.map((product) => {
+					const matchedArray =
+						product.toppings.length < 1
+							? true
+							: isArrMatch(product.toppings, action.payload.toppings);
+					if (product.id === action.payload.id && matchedArray) {
+						return {
+							...product,
+							qty: product.qty > 1 ? product.qty - 1 : product.qty,
+							subTotal: (product.qty > 1 ? product.qty - 1 : product.qty) * product.initialPrice,
+						};
+					} else {
+						return product;
+					}
+				}),
+			};
+
+		case 'INCREASE_QTY':
+			return {
+				...state,
+				carts: state.carts.map((product) => {
+					const matchedArray =
+						product.toppings.length < 1
+							? true
+							: isArrMatch(product.toppings, action.payload.toppings);
+					if (product.id === action.payload.id && matchedArray) {
+						return {
+							...product,
+							qty: product.qty < 50 ? product.qty + 1 : product.qty,
+							subTotal: (product.qty < 50 ? product.qty + 1 : product.qty) * product.initialPrice,
+						};
+					} else {
+						return product;
+					}
+				}),
+			};
+
+		case 'CHANGE_QTY':
+			return {
+				...state,
+				carts: state.carts.map((product) => {
+					const matchedArray =
+						product.toppings.length < 1
+							? true
+							: isArrMatch(product.toppings, action.payload.toppings);
+					if (product.id === action.payload.id && matchedArray) {
+						return {
+							...product,
+							qty: action.payload.qty < 1 ? 1 : action.payload.qty > 50 ? 50 : action.payload.qty,
+							subTotal:
+								(action.payload.qty < 1 ? 1 : action.payload.qty > 50 ? 50 : action.payload.qty) *
+								product.initialPrice,
+						};
+					} else {
+						return product;
+					}
+				}),
 			};
 
 		case 'REMOVE_CART':
@@ -36,6 +103,7 @@ const reducer = (state, action) => {
 
 		case 'REGISTER':
 			localStorage.setItem('token', action.payload.token);
+			console.log(action.payload);
 			return {
 				...state,
 				isLogin: true,
@@ -60,8 +128,7 @@ const reducer = (state, action) => {
 					name: action.payload.fullName,
 					email: action.payload.email,
 					role: action.payload.role,
-					avatar:
-						action.payload.avatar === 'false' ? null : action.payload.avatar,
+					avatar: action.payload.avatar === 'false' ? null : action.payload.avatar,
 				},
 			};
 
@@ -75,8 +142,7 @@ const reducer = (state, action) => {
 					name: action.payload.fullName,
 					email: action.payload.email,
 					role: action.payload.role,
-					avatar:
-						action.payload.avatar === 'false' ? null : action.payload.avatar,
+					avatar: action.payload.avatar === 'false' ? null : action.payload.avatar,
 				},
 			};
 
@@ -136,9 +202,5 @@ const reducer = (state, action) => {
 export const AppContextProvider = (props) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	return (
-		<AppContext.Provider value={[state, dispatch]}>
-			{props.children}
-		</AppContext.Provider>
-	);
+	return <AppContext.Provider value={[state, dispatch]}>{props.children}</AppContext.Provider>;
 };

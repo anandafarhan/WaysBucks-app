@@ -5,18 +5,20 @@ import Loading from '../Loading';
 import Cards from './Cards';
 
 function Featured() {
-	const [loading, setLoading] = useState(true);
 	const [products, setProducts] = useState([]);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useEffect(async () => {
-		setLoading(true);
+	async function loadProducts() {
 		let data = await getProducts();
 		setProducts(data);
-		setLoading(false);
+	}
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		loadProducts();
+		return () => setProducts(null);
 	}, []);
 
-	return loading || !products ? (
+	return !products ? (
 		<Loading />
 	) : (
 		<>

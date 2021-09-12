@@ -14,9 +14,7 @@ function Admin() {
 
 	const avatar = state.user.avatar
 		? state.user.avatar
-		: `https://avatars.dicebear.com/api/initials/${state.user.name
-				.split(' ')
-				.join('+')}.svg`;
+		: `https://avatars.dicebear.com/api/initials/${state.user.name.split(' ').join('+')}.svg`;
 
 	return (
 		<>
@@ -45,30 +43,7 @@ function Admin() {
 								style={{ position: 'relative', border: '2px solid #bd0707' }}
 							/>
 						</Dropdown.Toggle>
-						<Dropdown.Menu
-							align='end'
-							className='shadow-sm'
-							style={{ border: 0 }}
-						>
-							<Dropdown.Item as={Link} to='/addProduct'>
-								<img
-									src={`${process.env.PUBLIC_URL}/assets/img/icons/product.svg`}
-									className='icons-img'
-									width='30rem'
-									alt='Product'
-								/>{' '}
-								Add Product
-							</Dropdown.Item>
-							<Dropdown.Item as={Link} to='/addTopping'>
-								<img
-									src={`${process.env.PUBLIC_URL}/assets/img/icons/topping.svg`}
-									className='icons-img'
-									width='30rem'
-									alt='Topping'
-								/>{' '}
-								Add Topping
-							</Dropdown.Item>
-							<Dropdown.Divider />
+						<Dropdown.Menu align='end' style={{ border: 0 }}>
 							<Dropdown.Item onClick={handleLogout}>
 								<img
 									src={`${process.env.PUBLIC_URL}/assets/img/icons/logout.svg`}

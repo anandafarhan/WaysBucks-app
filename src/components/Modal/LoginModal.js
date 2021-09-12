@@ -49,7 +49,9 @@ function LoginModal(props) {
 		}
 	}
 
-	return (
+	return state.isLogin ? (
+		''
+	) : (
 		<Modal show={props.show} onHide={props.handleClose} dialogClassName='modal-overide' centered>
 			<Modal.Body>
 				<Modal.Title className='text-overide'>
@@ -88,7 +90,7 @@ function LoginModal(props) {
 					</Form.Group>
 
 					<div className='d-grid gap-2 my-3'>
-						<Button variant='danger' className='bg-overide' type='submit' block>
+						<Button variant='danger' className='bg-overide' type='submit'>
 							Login
 						</Button>
 					</div>

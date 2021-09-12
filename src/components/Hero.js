@@ -12,21 +12,16 @@ function Hero() {
 		>
 			<Image
 				className='d-block'
-				style={{ borderRadius: '10px' }}
-				src={`${process.env.PUBLIC_URL}/assets/img/hero/Jumbotron.svg`}
+				style={{ borderRadius: '10px', width: '90%' }}
+				src={`${process.env.PUBLIC_URL}/assets/img/hero/Jumbotron.png`}
 				alt='...'
 			/>
-			<div
-				className='position-absolute'
-				style={{ top: '4rem', left: '5rem', width: '45%' }}
-			>
+			<div className='position-absolute' style={{ top: '4rem', left: '5rem', width: '45%' }}>
 				<h1 className='mb-4 fw-bolder'>WAYSBUCKS</h1>
-				<p className='mb-4 fs-4 lead'>
-					Things are changing but we're still here for you
-				</p>
+				<p className='mb-4 fs-4 lead'>Things are changing but we're still here for you</p>
 				<p className='mb-5'>
-					We have temporarily closed our in-store cafes, but select grocery and
-					drive-thru locations remaining open.
+					We have temporarily closed our in-store cafes, but select grocery and drive-thru locations
+					remaining open.
 					<br />
 					<strong>Waysbucks</strong> Drivers is also available.
 				</p>
@@ -36,14 +31,11 @@ function Hero() {
 					</button>
 				</a>
 			</div>
-			<div
-				className='position-absolute'
-				style={{ top: '2rem', right: '-3rem', width: '45%' }}
-			>
+			<div className='position-absolute' style={{ top: '2rem', right: '-3rem', width: '45%' }}>
 				<Image
 					className='d-block'
-					style={{ borderRadius: '10px' }}
-					src={`${process.env.PUBLIC_URL}/assets/img/hero/coffee.svg`}
+					style={{ borderRadius: '10px', width: '90%' }}
+					src={`${process.env.PUBLIC_URL}/assets/img/hero/coffee.png`}
 					alt='...'
 				/>
 			</div>

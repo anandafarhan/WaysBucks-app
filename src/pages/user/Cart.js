@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Row, Col, Form, Button, Image } from 'react-bootstrap';
+import { Row, Col, Form, Button, Image, InputGroup, FormControl, Alert } from 'react-bootstrap';
 import { BiSad, BiTrash, BiReceipt } from 'react-icons/bi';
 import { useHistory } from 'react-router-dom';
 import CartModal from '../../components/Modal/CartModal';
@@ -13,6 +13,7 @@ function Cart(props) {
 	const [state, dispatch] = useContext(AppContext);
 	const { carts } = state;
 	const [modalState, setModalState] = useState(false);
+	const [alert, setAlert] = useState(false);
 	const [preview, setPreview] = useState(null);
 	const [formData, setFormData] = useState({
 		email: '',
@@ -53,42 +54,47 @@ function Cart(props) {
 	async function handleSubmit(e) {
 		e.preventDefault();
 		if (carts.length > 0) {
-			const transactionProducts = [];
+			if (preview) {
+				setAlert(false);
+				const transactionProducts = [];
 
-			carts.forEach((product) => {
-				const transactionToppings = [];
-				product.toppings.forEach((topping) =>
-					transactionToppings.push({
-						toppingId: topping.id,
-					})
-				);
-				transactionProducts.push({
-					productId: product.id,
-					qty: product.qty,
-					transactionToppings,
+				carts.forEach((product) => {
+					const transactionToppings = [];
+					product.toppings.forEach((topping) =>
+						transactionToppings.push({
+							toppingId: topping.id,
+						})
+					);
+					transactionProducts.push({
+						productId: product.id,
+						qty: product.qty,
+						transactionToppings,
+					});
 				});
-			});
 
-			const form = new FormData();
-			form.set('name', formData.name);
-			form.set('email', formData.email);
-			form.set('phone', formData.phone);
-			form.set('postCode', formData.postCode);
-			form.set('address', formData.address);
-			form.set('income', total);
-			form.set('transactionProducts', JSON.stringify(transactionProducts));
-			try {
-				form.set('attachment', formData.attachment[0], formData.attachment[0].name);
-			} catch (error) {}
+				const form = new FormData();
+				form.set('name', formData.name);
+				form.set('email', formData.email);
+				form.set('phone', formData.phone);
+				form.set('postCode', formData.postCode);
+				form.set('address', formData.address);
+				form.set('income', total);
+				form.set('transactionProducts', JSON.stringify(transactionProducts));
+				try {
+					form.set('attachment', formData.attachment[0], formData.attachment[0].name);
+				} catch (error) {}
 
-			setModalState(true);
-			const response = await addTransaction(form);
+				setModalState(true);
+				await addTransaction(form);
 
-			route.push('/profile');
+				route.push('/profile');
 
-			dispatch({
-				type: 'CLEAR_CART',
-			});
+				dispatch({
+					type: 'CLEAR_CART',
+				});
+			} else {
+				setAlert(true);
+			}
 		}
 	}
 
@@ -96,23 +102,19 @@ function Cart(props) {
 	const [totalQty, setTotalQty] = useState(0);
 	useEffect(() => {
 		setTotal(carts.map((product) => product.subTotal).reduce((a, b) => a + b, 0));
-		setTotalQty(carts.map((product) => product.qty).reduce((a, b) => a + b, 0));
+		setTotalQty(carts.map((product) => product.qty).reduce((a, b) => parseInt(a) + parseInt(b), 0));
 	}, [carts]);
-
-	useEffect(() => {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	}, []);
 
 	return (
 		<div className='d-block mx-auto' style={{ width: '70%' }}>
 			<h2 className='text-overide'>{title}</h2>
 			<Row>
-				<Col md={7} className='mt-4'>
-					<div className='border-bottom'>
+				<Col md={7} className='mt-4 g-0'>
+					<div className='border-bottom border-2'>
 						<h6 className='text-overide'>Review Your Order</h6>
 					</div>
 					<div
-						className='border-bottom '
+						className='border-bottom border-2 pe-2'
 						style={{
 							width: 'auto',
 							height: '260px',
@@ -146,7 +148,7 @@ function Cart(props) {
 									<Col md={8}>
 										<h6 className='fw-bold text-overide'>{product.name}</h6>
 										<div className='text-overide'>
-											<p>
+											<div>
 												{product.toppings.length < 1 ? (
 													<>
 														<span className='text-overide-2'>No Topping</span>{' '}
@@ -158,14 +160,51 @@ function Cart(props) {
 													</>
 												)}
 												<br />
-												<span className='fw-bold text-overide-2'>Qty :</span> {product.qty}
-											</p>
+												<Col md={3}>
+													<InputGroup size='sm' className='mt-2'>
+														<Button
+															variant='danger'
+															className='btn-overide'
+															onClick={() => dispatch({ type: 'DECREASE_QTY', payload: product })}
+														>
+															-
+														</Button>
+														<FormControl
+															placeholder='Qty'
+															aria-label='Qty'
+															name='qty'
+															className='text-center'
+															value={product.qty}
+															onChange={(e) =>
+																dispatch({
+																	type: 'CHANGE_QTY',
+																	payload: { ...product, qty: e.target.value },
+																})
+															}
+															min='1'
+															max='50'
+														/>
+														<Button
+															variant='danger'
+															className='btn-overide'
+															onClick={() => dispatch({ type: 'INCREASE_QTY', payload: product })}
+														>
+															+
+														</Button>
+													</InputGroup>
+												</Col>
+											</div>
 										</div>
 									</Col>
-									<Col md={2} className='text-end'>
-										<p className='text-overide mt-3 mb-0'>{formatPrice(product.subTotal)}</p>
-										<div className='text-overide mt-2'>
-											<Button variant='danger' size='sm' onClick={() => handleRemoveCart(i)}>
+									<Col md={2} className='align-items-end d-flex flex-column justify-content-end'>
+										<p className='text-overide'>{formatPrice(product.subTotal)}</p>
+										<div className='text-overide'>
+											<Button
+												variant='danger'
+												className='btn-overide'
+												size='sm'
+												onClick={() => handleRemoveCart(i)}
+											>
 												<BiTrash size='1.5rem' />
 											</Button>
 										</div>
@@ -240,6 +279,7 @@ function Cart(props) {
 										type='file'
 										name='attachment'
 										onChange={(e) => handleChange(e)}
+										accept='.jpg,.jpeg,.png,.svg'
 										required
 									/>
 								</Form.Group>
@@ -308,11 +348,22 @@ function Cart(props) {
 								required
 							/>
 						</Form.Group>
-
-						<div className='d-grid gap-2 mt-5'>
-							<Button variant='danger' className='bg-overide' type='submit'>
-								Pay
-							</Button>
+						<Alert
+							variant='danger'
+							style={alert ? { display: 'block', fontSize: '15px' } : { display: 'none' }}
+						>
+							Please provide attach of transaction
+						</Alert>
+						<div className='d-grid mt-4'>
+							{carts.length < 1 ? (
+								<Button variant='danger' className='bg-overide' type='submit' disabled>
+									Pay
+								</Button>
+							) : (
+								<Button variant='danger' className='bg-overide' type='submit'>
+									Pay
+								</Button>
+							)}
 						</div>
 					</Form>
 				</Col>

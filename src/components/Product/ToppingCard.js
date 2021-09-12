@@ -4,7 +4,7 @@ function ToppingCard({ ...props }) {
 	const { id, name, image } = props.topping;
 
 	return (
-		<Card border='white' className='my-1'>
+		<Card border='white' className='my-1 grow'>
 			<Card.Body>
 				<label className='block-check'>
 					<img src={image} alt={name} className='img-topping' />

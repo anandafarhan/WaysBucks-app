@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Card } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 
 function Cards(props) {
@@ -25,7 +25,7 @@ function Cards(props) {
 
 	return (
 		<Card
-			className='mx-1 my-3 card-overide'
+			className='mx-1 my-3 card-overide grow'
 			style={{ filter: 'drop-shadow(0px 5px 3px rgba(200,200,200,70%))' }}
 			onClick={() => handleClick(props.dataId)}
 		>

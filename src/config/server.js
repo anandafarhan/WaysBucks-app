@@ -95,6 +95,39 @@ export async function addProduct(inputData) {
 	}
 }
 
+//*------------------------------  Update Product with Img  ------------------------------*//
+export async function updateProductImg(inputData, id) {
+	try {
+		const response = await API.patch(`/productImg/${id}`, inputData, configMultiPart);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE PRODUCT:', err);
+	}
+}
+
+//*------------------------------  Update Product  ------------------------------*//
+export async function updateProduct(inputData, id) {
+	try {
+		const response = await API.patch(`/product/${id}`, inputData, configJSON);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE PRODUCT:', err);
+	}
+}
+
+//*------------------------------  Delete Product  ------------------------------*//
+export async function deleteProduct(id) {
+	try {
+		const response = await API.delete(`/product/${id}`);
+
+		return response;
+	} catch (err) {
+		console.error('ERR_CONFIG DELETE PRODUCT:', err);
+	}
+}
+
 //*------------------------------  Get All Toppings  ------------------------------*//
 export async function getToppings() {
 	try {
@@ -106,6 +139,17 @@ export async function getToppings() {
 	}
 }
 
+//*------------------------------  Get Product by Id  ------------------------------*//
+export async function getTopping(id) {
+	try {
+		const response = await API.get(`/topping/${id}`);
+
+		return response.data.data.topping;
+	} catch (err) {
+		console.error('ERR_CONFIG GET TOPPING:', err);
+	}
+}
+
 //*------------------------------  Add Topping  ------------------------------*//
 export async function addTopping(inputData) {
 	try {
@@ -114,6 +158,39 @@ export async function addTopping(inputData) {
 		return response.data.data;
 	} catch (err) {
 		console.error('ERR_CONFIG ADD TOPPING:', err);
+	}
+}
+
+//*------------------------------  Update Topping with Img  ------------------------------*//
+export async function updateToppingImg(inputData, id) {
+	try {
+		const response = await API.patch(`/toppingImg/${id}`, inputData, configMultiPart);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE TOPPING:', err);
+	}
+}
+
+//*------------------------------  Update Product  ------------------------------*//
+export async function updateTopping(inputData, id) {
+	try {
+		const response = await API.patch(`/topping/${id}`, inputData, configJSON);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE TOPPING:', err);
+	}
+}
+
+//*------------------------------  Delete Topping  ------------------------------*//
+export async function deleteTopping(id) {
+	try {
+		const response = await API.delete(`/topping/${id}`);
+
+		return response;
+	} catch (err) {
+		console.error('ERR_CONFIG DELETE TOPPING:', err);
 	}
 }
 
@@ -136,6 +213,28 @@ export async function getUserTransactions(inputData) {
 		return response.data.data.transaction;
 	} catch (err) {
 		console.error('ERR_CONFIG GET USER TRANSACTION:', err);
+	}
+}
+
+//*------------------------------  Get Transaction Product Count  ------------------------------*//
+export async function getTPCount(id) {
+	try {
+		const response = await API.get(`/tProductCount/${id}`);
+
+		return response.data.data.count;
+	} catch (err) {
+		console.error('ERR_CONFIG GET PRODUCT TRANSACTION COUNT:', err);
+	}
+}
+
+//*------------------------------  Get Transaction Topping Count  ------------------------------*//
+export async function getTTCount(id) {
+	try {
+		const response = await API.get(`/tToppingCount/${id}`);
+
+		return response.data.data.count;
+	} catch (err) {
+		console.error('ERR_CONFIG GET TOPPING TRANSACTION COUNT:', err);
 	}
 }
 

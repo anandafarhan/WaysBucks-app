@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import AddDataProduct from '../../components/Product/AddDataProduct';
+import Loading from '../../components/Loading';
+import FormProduct from '../../components/Product/FormProduct';
 import { addTopping } from '../../config/server';
 import { AppContext } from '../../context/AppContext';
 
@@ -19,14 +20,16 @@ function AddTopping() {
 		form.set('price', formData.price);
 		form.set('image', formData.image[0], formData.image[0].name);
 
-		const response = await addTopping(form);
+		await addTopping(form);
 
 		route.push('/toppings');
 		dispatch({ type: 'IS_LOADING_FALSE' });
 	}
-	return (
+	return state.isLoading ? (
+		<Loading />
+	) : (
 		<div>
-			<AddDataProduct suffix='Topping' handleSubmit={handleSubmit} />
+			<FormProduct prefix='Add' suffix='Topping' handleSubmit={handleSubmit} />
 		</div>
 	);
 }

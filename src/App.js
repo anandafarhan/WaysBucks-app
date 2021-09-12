@@ -5,6 +5,7 @@ import PrivateAdminRoute from './components/Route/PrivateAdminRoute';
 import PrivateRoute from './components/Route/PrivateRoute';
 import { API, setAuthToken } from './config/server';
 import { AppContext } from './context/AppContext';
+import ScrollToTop from 'react-router-scroll-top';
 
 import Transaction from './pages/admin/Transaction';
 import Headers from './components/Navbar/Headers';
@@ -18,6 +19,8 @@ import Loading from './components/Loading';
 import Cart from './pages/user/Cart';
 import Home from './pages/Home';
 import './App.css';
+import EditProduct from './pages/admin/EditProduct';
+import EditTopping from './pages/admin/EditTopping';
 
 function App() {
 	const [state, dispatch] = useContext(AppContext);
@@ -27,27 +30,24 @@ function App() {
 	}
 
 	const loadUser = async () => {
+		dispatch({ type: 'IS_LOADING_TRUE' });
 		try {
-			dispatch({ type: 'IS_LOADING_TRUE' });
 			const response = await API('/auth');
 
 			dispatch({
 				type: 'LOAD_USER',
 				payload: response.data.data,
 			});
-
-			dispatch({ type: 'IS_LOADING_FALSE' });
 		} catch (err) {
-			dispatch({ type: 'IS_LOADING_FALSE' });
 			dispatch({
 				type: 'AUTH_ERROR',
 			});
 		}
+		dispatch({ type: 'IS_LOADING_FALSE' });
 	};
 
 	useEffect(() => {
 		loadUser();
-		dispatch({ type: 'IS_LOADING_FALSE' });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -55,6 +55,7 @@ function App() {
 		<Loading />
 	) : (
 		<Router>
+			<ScrollToTop />
 			<Headers />
 			<div style={{ marginTop: '100px' }}>
 				<Switch>
@@ -64,13 +65,11 @@ function App() {
 					<PrivateRoute exact path='/product/:id' component={Product} />
 					<PrivateAdminRoute exact path='/products' component={Products} />
 					<PrivateAdminRoute exact path='/toppings' component={Toppings} />
-					<PrivateAdminRoute exact path='/addTopping' component={AddTopping} />
 					<PrivateAdminRoute exact path='/addProduct' component={AddProduct} />
-					<PrivateAdminRoute
-						exact
-						path='/transaction'
-						component={Transaction}
-					/>
+					<PrivateAdminRoute exact path='/addTopping' component={AddTopping} />
+					<PrivateAdminRoute exact path='/editProduct/:id' component={EditProduct} />
+					<PrivateAdminRoute exact path='/editTopping/:id' component={EditTopping} />
+					<PrivateAdminRoute exact path='/transaction' component={Transaction} />
 				</Switch>
 			</div>
 		</Router>

@@ -1,7 +1,6 @@
-import React, { useReducer, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav, Container } from 'react-bootstrap';
-import Logo from '../../assets/Logo.svg';
+import { Navbar, Container } from 'react-bootstrap';
 import LoginModal from '../Modal/LoginModal';
 import RegisterModal from '../Modal/RegisterModal';
 import User from './User';
@@ -16,14 +15,13 @@ function Headers() {
 		if (!state.isLogin) {
 			return <Guest dispatch={dispatch} />;
 		}
-		console.log(state.user.role);
 		switch (state.user.role) {
 			case 'admin':
 				return <Admin />;
 			case 'user':
 				return <User />;
 			default:
-				throw new Error();
+				return <Guest dispatch={dispatch} />;
 		}
 	};
 

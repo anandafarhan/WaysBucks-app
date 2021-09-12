@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nav, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 function Guest({ dispatch }) {
 	return (

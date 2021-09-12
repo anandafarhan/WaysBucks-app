@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Loading from '../../components/Loading';
-import AddDataProduct from '../../components/Product/AddDataProduct';
+import FormProduct from '../../components/Product/FormProduct';
 import { addProduct } from '../../config/server';
 import { AppContext } from '../../context/AppContext';
 
@@ -22,7 +22,7 @@ function AddProduct() {
 			form.set('image', formData.image[0], formData.image[0].name);
 		} catch (error) {}
 
-		const response = await addProduct(form);
+		await addProduct(form);
 
 		route.push('/products');
 		dispatch({ type: 'IS_LOADING_FALSE' });
@@ -31,7 +31,7 @@ function AddProduct() {
 		<Loading />
 	) : (
 		<div>
-			<AddDataProduct suffix='Product' handleSubmit={handleSubmit} />
+			<FormProduct prefix='Add' suffix='Product' handleSubmit={handleSubmit} />
 		</div>
 	);
 }
