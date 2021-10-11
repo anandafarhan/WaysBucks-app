@@ -1,20 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Row, Col, Image, Form, Button } from 'react-bootstrap';
+import { Row, Col, Image, Form, Button, Card, NavLink, ListGroup } from 'react-bootstrap';
 import QRCode from 'qrcode.react';
 import { BiEdit } from 'react-icons/bi';
 import { AppContext } from '../../context/AppContext';
-import { API, getUserTransactions, updateTransaction, updateUser } from '../../config/server';
+import {
+	API,
+	getUserTransactions,
+	updateTransaction,
+	updateUser,
+	getUserAddresses,
+} from '../../config/server';
 import TransactionDetail from '../../components/Modal/TransactionDetail';
+import AddressModal from '../../components/Modal/AddressModal';
 
 function Profile() {
-	const title = 'Profile';
 	const [state, dispatch] = useContext(AppContext);
+	const title = 'Profile';
+	document.title = `Waysbucks | ${state.user.name ? state.user.name : title}`;
 	const [transactions, setTransactions] = useState(null);
 	const [editMode, setEditMode] = useState(false);
 	const [userData, setUserData] = useState({});
 	const [preview, setPreview] = useState(null);
 	const [wait, setWait] = useState(false);
 	const [modalTD, setModalTD] = useState({ show: false, payload: '' });
+	const [addresses, setAddresses] = useState(null);
+	const [modalAddress, setModalAddress] = useState(false);
 
 	const avatar = state.user.avatar
 		? state.user.avatar
@@ -48,6 +58,12 @@ function Profile() {
 	async function myTransaction() {
 		const response = await getUserTransactions();
 		setTransactions(response);
+	}
+
+	async function loadAddress() {
+		const response = await getUserAddresses();
+		console.log(response);
+		setAddresses(response);
 	}
 
 	function handleEdit() {
@@ -88,7 +104,6 @@ function Profile() {
 		} catch (error) {}
 
 		const response = await updateUser(form);
-		console.log(response);
 		const response2 = await API('/auth');
 		dispatch({
 			type: 'LOAD_USER',
@@ -107,10 +122,11 @@ function Profile() {
 		setWait(false);
 	}
 
-	document.title = `Waysbucks | ${state.user.name ? state.user.name : title}`;
+	const primaryAddress = !addresses ? null : addresses.find((item) => item.isprimary);
+
 	useEffect(() => {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 		myTransaction();
+		loadAddress();
 	}, [wait]);
 
 	return (
@@ -205,6 +221,44 @@ function Profile() {
 						</Col>
 					</Row>
 				)}
+				<Row>
+					<h3 className='text-overide my-4'>Primary Address</h3>
+				</Row>
+				<Row className='pe-5 ps-2'>
+					{!primaryAddress ? (
+						''
+					) : (
+						<Card className='p-0' style={{ border: '1px solid #f6dada' }}>
+							<Card.Header as='h5' className='bg-overide-2 text-overide'>
+								{primaryAddress.title}
+							</Card.Header>
+							<Card.Body>
+								<ListGroup variant='flush'>
+									<ListGroup.Item>
+										<strong className='text-overide-2'>Name : </strong>
+										{primaryAddress.name}
+									</ListGroup.Item>
+									<ListGroup.Item>
+										<strong className='text-overide-2'>Phone : </strong>
+										{primaryAddress.phone}
+									</ListGroup.Item>
+									<ListGroup.Item>
+										<strong className='text-overide-2'>Address : </strong>
+										{primaryAddress.address}
+									</ListGroup.Item>
+									<ListGroup.Item>
+										<strong className='text-overide-2'>Zip code : </strong>
+										{primaryAddress.postCode}
+									</ListGroup.Item>
+								</ListGroup>
+							</Card.Body>
+						</Card>
+					)}
+
+					<NavLink className='text-overide-2' onClick={() => setModalAddress(true)}>
+						Manage Addresses
+					</NavLink>
+				</Row>
 			</Col>
 			<Col md={6}>
 				<h2 className='text-overide my-4' style={{ color: '#613D2B' }}>
@@ -231,7 +285,7 @@ function Profile() {
 									<Col
 										className='d-flex flex-column text-overide overflow-auto'
 										style={{
-											height: '250px',
+											height: '270px',
 											justifyContent: transaction.transactionProducts.length <= 1 ? 'center' : '',
 										}}
 										md={9}
@@ -255,8 +309,8 @@ function Profile() {
 													<Col md={9}>
 														<h5 className='mb-0'>{transactionProduct.product.name}</h5>
 														<span style={{ fontSize: '12px' }}>
-															<strong>{days[date.getDay()]}</strong>, {date.getDate()}{' '}
-															{months[date.getMonth()]} {date.getFullYear()}
+															<strong>{days[date.getDay()]}</strong>, {date.getDate()} {months[date.getMonth()]}{' '}
+															{date.getFullYear()}
 														</span>
 														<p className='mb-0' style={{ fontSize: '13px' }}>
 															{transactionProduct.transactionToppings.length < 1 ? (
@@ -282,10 +336,8 @@ function Profile() {
 																{formatPrice(
 																	transactionProduct.transactionToppings
 																		.map((selectedTopping) => selectedTopping.topping.price)
-																		.reduce(
-																			(prev, curr) => prev + curr,
-																			transactionProduct.product.price
-																		) * transactionProduct.qty
+																		.reduce((prev, curr) => prev + curr, transactionProduct.product.price) *
+																		transactionProduct.qty
 																)}
 															</span>
 														</p>
@@ -294,10 +346,7 @@ function Profile() {
 											);
 										})}
 									</Col>
-									<Col
-										md={3}
-										className='d-flex flex-column justify-content-evenly align-items-center'
-									>
+									<Col md={3} className='d-flex flex-column justify-content-evenly align-items-center'>
 										<Image
 											src={`${process.env.PUBLIC_URL}/assets/img/Logo.svg`}
 											className='mb-2'
@@ -328,11 +377,7 @@ function Profile() {
 											{transaction.status === 'On The Way' ? (
 												<div className='my-1'>
 													{!wait ? (
-														<Button
-															variant='success'
-															size='sm'
-															onClick={(e) => handleReceive(transaction.id, e)}
-														>
+														<Button variant='success' size='sm' onClick={(e) => handleReceive(transaction.id, e)}>
 															Confirm Receive
 														</Button>
 													) : (
@@ -358,6 +403,13 @@ function Profile() {
 				handleClose={handleCloseTD}
 				handleReceive={handleReceive}
 				payload={modalTD.payload}
+			/>
+			<AddressModal
+				show={modalAddress}
+				fullscreen={true}
+				handleClose={() => setModalAddress(false)}
+				wait={wait}
+				setWait={setWait}
 			/>
 		</Row>
 	);
