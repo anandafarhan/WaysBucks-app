@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useEffect, useContext } from 'react';
-import { Row, Col, Image, Button } from 'react-bootstrap';
+import { Row, Col, Image, Button, Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import ToppingCard from '../../components/Product/ToppingCard';
-import { getProduct, getToppings } from '../../config/server';
+import { getProduct, getAvlToppings } from '../../config/server';
 import { AppContext } from '../../context/AppContext';
 
 function Product() {
 	const title = 'Product Detail';
+	const [wait, setWait] = useState(false);
 	const [state, dispatch] = useContext(AppContext);
 	const [product, setProduct] = useState({});
 	const [toppings, setToppings] = useState([]);
@@ -25,7 +26,7 @@ function Product() {
 	async function loadProduct() {
 		try {
 			let product = await getProduct(parseInt(id));
-			let toppings = await getToppings();
+			let toppings = await getAvlToppings();
 			setProduct(product);
 			setToppings(toppings);
 			document.title = `Waysbucks | ${product.name ? product.name : title}`;
@@ -56,6 +57,7 @@ function Product() {
 		.reduce((prev, curr) => prev + curr, product.price);
 
 	function handleAddtoCart() {
+		setWait(true);
 		dispatch({
 			type: 'ADD_CART',
 			payload: {
@@ -66,6 +68,9 @@ function Product() {
 				toppings: selectedToppings,
 			},
 		});
+		setTimeout(() => {
+			setWait(false);
+		}, 1000);
 	}
 
 	// console.log(state.carts);
@@ -115,9 +120,15 @@ function Product() {
 								<h5 className='text-end'>{formatPrice(subTotal)}</h5>
 							</Col>
 							<div className='d-grid gap-2 mt-3'>
-								<Button variant='danger' className='bg-overide' onClick={handleAddtoCart}>
-									Add to Cart
-								</Button>
+								{wait ? (
+									<Button variant='danger' className='bg-overide' disabled>
+										<Spinner animation='border' variant='white' size='sm' />
+									</Button>
+								) : (
+									<Button variant='danger' className='bg-overide' onClick={handleAddtoCart}>
+										Add to Cart
+									</Button>
+								)}
 							</div>
 						</Row>
 					</Row>
