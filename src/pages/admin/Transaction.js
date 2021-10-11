@@ -4,6 +4,7 @@ import Loading from '../../components/Loading';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import { getTransactions, updateTransaction } from '../../config/server';
 import { FaCheckCircle, FaTimesCircle, FaStumbleuponCircle } from 'react-icons/fa';
+import TransactionDetail from '../../components/Modal/TransactionDetail';
 
 function Transaction() {
 	const title = 'List of Income Transactions';
@@ -11,6 +12,8 @@ function Transaction() {
 	const [wait, setWait] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [transactions, setTransactions] = useState(null);
+	const [modalTD, setModalTD] = useState({ show: false, payload: '' });
+
 	function formatPrice(price) {
 		return new Intl.NumberFormat('id-ID', {
 			style: 'currency',
@@ -59,6 +62,14 @@ function Transaction() {
 		setWait(false);
 	}
 
+	function handleCloseTD() {
+		setModalTD({ show: false, payload: null });
+	}
+
+	function handleOpenTD(payload) {
+		setModalTD({ show: true, payload });
+	}
+
 	useEffect(() => {
 		getAllTransactions();
 	}, [wait]);
@@ -81,7 +92,7 @@ function Transaction() {
 							<th>Address</th>
 							<th>Post Code</th>
 							<th>Income</th>
-							<th>Attachment</th>
+							<th>Transaction Detail</th>
 							<th>Status</th>
 							<th width='230px'>Action</th>
 						</tr>
@@ -94,8 +105,10 @@ function Transaction() {
 								<td>{transaction.address}</td>
 								<td>{transaction.postCode}</td>
 								<td style={{ color: '#061E99' }}>{formatPrice(transaction.income)}</td>
-								<td style={{ color: '#061E99' }}>
-									<a href={transaction.attachment}>Attachment</a>
+								<td className='text-center'>
+									<Button variant='outline-danger' size='sm' onClick={() => handleOpenTD(transaction)}>
+										See Details
+									</Button>
 								</td>
 								<td
 									className={
@@ -178,6 +191,7 @@ function Transaction() {
 				action={modalConfirm.action}
 				handleClose={handleClose}
 			/>
+			<TransactionDetail show={modalTD.show} handleClose={handleCloseTD} payload={modalTD.payload} />
 		</div>
 	);
 }
