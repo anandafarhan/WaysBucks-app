@@ -1,9 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Row, Col, Form, Button, Image, InputGroup, FormControl, Alert } from 'react-bootstrap';
+import {
+	Row,
+	Col,
+	Form,
+	Button,
+	Image,
+	InputGroup,
+	FormControl,
+	Alert,
+	FloatingLabel,
+} from 'react-bootstrap';
 import { BiSad, BiTrash, BiReceipt } from 'react-icons/bi';
 import { useHistory } from 'react-router-dom';
 import CartModal from '../../components/Modal/CartModal';
-import { addTransaction } from '../../config/server';
+import { addTransaction, getUserAddresses, updateTransaction } from '../../config/server';
 import { AppContext } from '../../context/AppContext';
 
 function Cart(props) {
@@ -15,6 +25,7 @@ function Cart(props) {
 	const [modalState, setModalState] = useState(false);
 	const [alert, setAlert] = useState(false);
 	const [preview, setPreview] = useState(null);
+	const [addresses, setAddresses] = useState([]);
 	const [formData, setFormData] = useState({
 		email: '',
 		name: '',
@@ -30,6 +41,23 @@ function Cart(props) {
 			currency: 'IDR',
 			minimumFractionDigits: 0,
 		}).format(price);
+	}
+
+	async function loadAddress() {
+		const response = await getUserAddresses();
+		console.log(response);
+		const primaryAddress = response ? response.find((address) => address.isprimary) : null;
+		if (primaryAddress) {
+			setFormData({
+				...formData,
+				email: primaryAddress.email,
+				fullName: primaryAddress.name,
+				phone: primaryAddress.phone,
+				postCode: primaryAddress.postCode,
+				address: primaryAddress.address,
+			});
+		}
+		setAddresses(response ? response : []);
 	}
 
 	function handleChange(e) {
@@ -73,24 +101,38 @@ function Cart(props) {
 				});
 
 				const form = new FormData();
-				form.set('name', formData.name);
-				form.set('email', formData.email);
-				form.set('phone', formData.phone);
-				form.set('postCode', formData.postCode);
-				form.set('address', formData.address);
-				form.set('income', total);
-				form.set('transactionProducts', JSON.stringify(transactionProducts));
 				try {
+					form.set('name', formData.fullName);
+					form.set('email', formData.email);
+					form.set('phone', formData.phone);
+					form.set('postCode', formData.postCode);
+					form.set('address', formData.address);
+					form.set('income', total);
+					form.set('transactionProducts', JSON.stringify(transactionProducts));
 					form.set('attachment', formData.attachment[0], formData.attachment[0].name);
 				} catch (error) {}
 
 				setModalState(true);
-				await addTransaction(form);
-
-				route.push('/profile');
-
-				dispatch({
-					type: 'CLEAR_CART',
+				const response = await addTransaction(form);
+				window.snap.pay(response.payment.token, {
+					onSuccess: function (result) {
+						route.push('/profile');
+						dispatch({
+							type: 'CLEAR_CART',
+						});
+					},
+					onPending: function (result) {
+						updateTransaction(response.transaction.id, { status: 'Canceled' });
+						route.push('/profile');
+					},
+					onError: function (result) {
+						updateTransaction(response.transaction.id, { status: 'Canceled' });
+						route.push('/profile');
+					},
+					onClose: function () {
+						updateTransaction(response.transaction.id, { status: 'Canceled' });
+						route.push('/profile');
+					},
 				});
 			} else {
 				setAlert(true);
@@ -98,12 +140,61 @@ function Cart(props) {
 		}
 	}
 
+	function handleAddressChange(e) {
+		if (e.target.value !== 'manual') {
+			const selectedAddress = addresses.find((item) => item.id === parseInt(e.target.value));
+			setFormData({
+				...formData,
+				email: selectedAddress.email,
+				fullName: selectedAddress.name,
+				phone: selectedAddress.phone,
+				postCode: selectedAddress.postCode,
+				address: selectedAddress.address,
+			});
+		} else {
+			setFormData({
+				...formData,
+				email: '',
+				fullName: '',
+				phone: '',
+				postCode: '',
+				address: '',
+			});
+		}
+	}
+
+	const deliveryFee = carts.length < 1 ? 0 : 10000;
+	const [tax, setTax] = useState(0);
+	const [subTotal, setSubTotal] = useState(0);
 	const [total, setTotal] = useState(0);
 	const [totalQty, setTotalQty] = useState(0);
 	useEffect(() => {
-		setTotal(carts.map((product) => product.subTotal).reduce((a, b) => a + b, 0));
+		loadAddress();
+		const scriptTag = document.createElement('script');
+		scriptTag.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+		scriptTag.setAttribute('data-client-key', process.env.REACT_APP_CLIENT_KEY);
+		document.body.appendChild(scriptTag);
+		return () => {
+			document.body.removeChild(scriptTag);
+		};
+	}, []);
+
+	useEffect(() => {
+		setSubTotal(
+			carts.map((product) => product.subTotal).reduce((a, b) => parseInt(a) + parseInt(b), 0)
+		);
 		setTotalQty(carts.map((product) => product.qty).reduce((a, b) => parseInt(a) + parseInt(b), 0));
 	}, [carts]);
+
+	useEffect(() => {
+		setTax(parseInt(subTotal) * 0.1, 0);
+	}, [subTotal]);
+
+	useEffect(() => {
+		setTotal(
+			carts.map((product) => product.subTotal).reduce((a, b) => parseInt(a) + parseInt(b), tax)
+		);
+	}, [tax]);
 
 	return (
 		<div className='d-block mx-auto' style={{ width: '70%' }}>
@@ -220,14 +311,18 @@ function Cart(props) {
 								<Row className='border-top mt-4 g-0'>
 									<Col>
 										<div className='mt-3'>
+											<p className='text-overide'>Total Qty</p>
 											<p className='text-overide mt-3'>Subtotal</p>
-											<p className='text-overide'>Qty</p>
+											<p className='text-overide'>Tax 10%</p>
+											<p className='text-overide'>Delivery fee</p>
 										</div>
 									</Col>
 									<Col>
 										<div className='mt-3 text-end'>
-											<p className='text-overide mt-3'>{formatPrice(total)}</p>
 											<p className='text-overide'>{totalQty}</p>
+											<p className='text-overide mt-3'>{formatPrice(subTotal)}</p>
+											<p className='text-overide'>{formatPrice(tax)}</p>
+											<p className='text-overide'>{formatPrice(deliveryFee)}</p>
 										</div>
 									</Col>
 								</Row>
@@ -242,7 +337,7 @@ function Cart(props) {
 									<Col>
 										<div className='mt-3 text-end'>
 											<p className='text-overide mt-3'>
-												<strong>{formatPrice(total)}</strong>
+												<strong>{formatPrice(total + deliveryFee)}</strong>
 											</p>
 										</div>
 									</Col>
@@ -261,11 +356,7 @@ function Cart(props) {
 											borderRadius: '5px',
 										}}
 									>
-										{preview ? (
-											<Image src={preview} alt='receipt' width='80px' />
-										) : (
-											<BiReceipt size='3rem' />
-										)}
+										{preview ? <Image src={preview} alt='receipt' width='80px' /> : <BiReceipt size='3rem' />}
 
 										<p>
 											{formData.attachment === null || formData.attachment.length < 1
@@ -288,6 +379,32 @@ function Cart(props) {
 					</div>
 				</Col>
 				<Col md={5} className='mt-5 ps-5'>
+					<FloatingLabel controlId='floatingSelect' label='Saved Addresses'>
+						<Form.Select
+							aria-label='Saved Addresses'
+							className='input-overide mb-3'
+							onChange={(e) => handleAddressChange(e)}
+						>
+							{addresses.length < 1 ? (
+								<option value='manual'>You Have no Saved Address</option>
+							) : (
+								<>
+									<option value='manual'>Select Address</option>
+									{addresses.map((address) =>
+										address.isprimary ? (
+											<option key={address.id} value={address.id} selected>
+												{address.title}
+											</option>
+										) : (
+											<option key={address.id} value={address.id}>
+												{address.title}
+											</option>
+										)
+									)}
+								</>
+							)}
+						</Form.Select>
+					</FloatingLabel>
 					<Form onSubmit={(e) => handleSubmit(e)}>
 						<Form.Group className='mb-3' controlId='FullName'>
 							<Form.Control
