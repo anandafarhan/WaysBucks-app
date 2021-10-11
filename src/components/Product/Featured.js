@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { getAvlProducts } from '../../config/server';
-import Loading from '../Loading';
 import Cards from './Cards';
 
 function Featured() {

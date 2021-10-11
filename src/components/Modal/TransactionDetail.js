@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, ListGroup, Modal, Row, Image, Button } from 'react-bootstrap';
+import { Col, ListGroup, Modal, Row, Image } from 'react-bootstrap';
 import QRCode from 'qrcode.react';
 
 function TransactionDetail({ show, payload, handleClose, handleReceive }) {

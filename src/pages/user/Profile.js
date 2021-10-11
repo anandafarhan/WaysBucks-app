@@ -103,7 +103,7 @@ function Profile() {
 			form.set('avatar', userData.avatar[0], userData.avatar[0].name);
 		} catch (error) {}
 
-		const response = await updateUser(form);
+		await updateUser(form);
 		const response2 = await API('/auth');
 		dispatch({
 			type: 'LOAD_USER',
