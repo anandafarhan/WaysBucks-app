@@ -7,7 +7,7 @@ function Hero() {
 			className='mx-auto my-4 position-relative text-white'
 			style={{
 				width: '70%',
-				filter: 'drop-shadow(0px 10px 3px rgba(200,200,200,70%))',
+				filter: 'drop-shadow(0px 7px 3px rgba(200,200,200,70%))',
 			}}
 		>
 			<Image
