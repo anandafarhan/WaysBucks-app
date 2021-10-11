@@ -141,10 +141,8 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 																{formatPrice(
 																	transactionProduct.transactionToppings
 																		.map((selectedTopping) => selectedTopping.topping.price)
-																		.reduce(
-																			(prev, curr) => prev + curr,
-																			transactionProduct.product.price
-																		) * transactionProduct.qty
+																		.reduce((prev, curr) => prev + curr, transactionProduct.product.price) *
+																		transactionProduct.qty
 																)}
 															</span>
 														</p>
@@ -154,13 +152,12 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 										</Row>
 								  ))}
 						</div>
+						<h3 className='mt-4 text-overide'>Transaction Attachment</h3>
+						<hr />
+						<Image src={payload.attachment} width='100%' />
 					</Col>
 					<Col md={4} className='d-flex flex-column align-items-center justify-content-evenly'>
-						<Image
-							src={`${process.env.PUBLIC_URL}/assets/img/Logo.svg`}
-							className='mb-2'
-							width='180px'
-						/>
+						<Image src={`${process.env.PUBLIC_URL}/assets/img/Logo.svg`} className='mb-2' width='180px' />
 						<QRCode
 							value={`http://localhost:5000/api/v1/transaction/${payload.id}`}
 							className='mb-2 p-1 bg-white rounded'
@@ -184,7 +181,7 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 							}
 						>
 							{payload.status}
-							{payload.status === 'On The Way' ? (
+							{/* {payload.status === 'On The Way' ? (
 								<div className='my-1'>
 									{
 										<Button variant='success' onClick={(e) => handleReceive(payload.id, e)}>
@@ -194,7 +191,7 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 								</div>
 							) : (
 								''
-							)}
+							)} */}
 						</div>
 					</Col>
 				</Row>

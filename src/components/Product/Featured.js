@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { getProducts } from '../../config/server';
+import { getAvlProducts } from '../../config/server';
 import Loading from '../Loading';
 import Cards from './Cards';
 
@@ -8,7 +8,7 @@ function Featured() {
 	const [products, setProducts] = useState([]);
 
 	async function loadProducts() {
-		let data = await getProducts();
+		let data = await getAvlProducts();
 		setProducts(data);
 	}
 
@@ -19,7 +19,7 @@ function Featured() {
 	}, []);
 
 	return !products ? (
-		<Loading />
+		'No Product'
 	) : (
 		<>
 			<span className='anchor' id='featured'></span>

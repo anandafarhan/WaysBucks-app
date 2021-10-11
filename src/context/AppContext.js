@@ -20,17 +20,15 @@ const reducer = (state, action) => {
 		case 'ADD_CART':
 			const isExist = state.carts.find(
 				(product) =>
-					JSON.stringify(product.id + product.toppings) ===
-					JSON.stringify(action.payload.id + action.payload.toppings)
+					product.id + JSON.stringify(product.toppings) ===
+					action.payload.id + JSON.stringify(action.payload.toppings)
 			);
 			if (isExist) {
 				return {
 					...state,
 					carts: state.carts.map((product) => {
 						const matchedArray =
-							product.toppings.length < 1
-								? true
-								: isArrMatch(product.toppings, action.payload.toppings);
+							product.toppings.length < 1 ? true : isArrMatch(product.toppings, action.payload.toppings);
 						if (product.id === action.payload.id && matchedArray) {
 							return {
 								...product,
@@ -56,9 +54,7 @@ const reducer = (state, action) => {
 				...state,
 				carts: state.carts.map((product) => {
 					const matchedArray =
-						product.toppings.length < 1
-							? true
-							: isArrMatch(product.toppings, action.payload.toppings);
+						product.toppings.length < 1 ? true : isArrMatch(product.toppings, action.payload.toppings);
 					if (product.id === action.payload.id && matchedArray) {
 						return {
 							...product,
@@ -76,9 +72,7 @@ const reducer = (state, action) => {
 				...state,
 				carts: state.carts.map((product) => {
 					const matchedArray =
-						product.toppings.length < 1
-							? true
-							: isArrMatch(product.toppings, action.payload.toppings);
+						product.toppings.length < 1 ? true : isArrMatch(product.toppings, action.payload.toppings);
 					if (product.id === action.payload.id && matchedArray) {
 						return {
 							...product,
@@ -96,9 +90,7 @@ const reducer = (state, action) => {
 				...state,
 				carts: state.carts.map((product) => {
 					const matchedArray =
-						product.toppings.length < 1
-							? true
-							: isArrMatch(product.toppings, action.payload.toppings);
+						product.toppings.length < 1 ? true : isArrMatch(product.toppings, action.payload.toppings);
 					if (product.id === action.payload.id && matchedArray) {
 						return {
 							...product,

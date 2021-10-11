@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { Row, Col, Image, Form, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 
 function FormProduct({ prefix, suffix, payload, handleSubmit }) {
 	const [preview, setPreview] = useState(null);

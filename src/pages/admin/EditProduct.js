@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import Loading from '../../components/Loading';
-import FormProduct from '../../components/Product/FormProduct';
 import { getProduct, updateProduct, updateProductImg } from '../../config/server';
+import React, { useContext, useEffect, useState } from 'react';
+import FormProduct from '../../components/Product/FormProduct';
+import { useHistory, useParams } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
+import Loading from '../../components/Loading';
 
 function EditProduct() {
 	const title = 'Product';
@@ -22,9 +22,12 @@ function EditProduct() {
 	}
 
 	const route = useHistory();
+
 	async function handleSubmit(e, formData) {
 		e.preventDefault();
+
 		dispatch({ type: 'IS_LOADING_TRUE' });
+
 		if (formData.image) {
 			const form = new FormData();
 			form.set('name', formData.name);
@@ -32,11 +35,14 @@ function EditProduct() {
 			try {
 				form.set('image', formData.image[0], formData.image[0].name);
 			} catch (error) {}
+
 			await updateProductImg(form, id);
 		} else {
 			await updateProduct({ name: formData.name, price: formData.price }, id);
 		}
+
 		route.push('/products');
+
 		dispatch({ type: 'IS_LOADING_FALSE' });
 	}
 
