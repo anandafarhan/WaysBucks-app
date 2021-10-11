@@ -73,6 +73,17 @@ export async function getProducts() {
 	}
 }
 
+//*------------------------------  Get All Available Products  ------------------------------*//
+export async function getAvlProducts() {
+	try {
+		const response = await API.get('/avlProducts');
+
+		return response.data.data.products;
+	} catch (err) {
+		console.error('ERR_CONFIG GET PRODUCTS:', err);
+	}
+}
+
 //*------------------------------  Get Product by Id  ------------------------------*//
 export async function getProduct(id) {
 	try {
@@ -139,6 +150,17 @@ export async function getToppings() {
 	}
 }
 
+//*------------------------------  Get All Available Toppings  ------------------------------*//
+export async function getAvlToppings() {
+	try {
+		const response = await API.get(`/avlToppings`);
+
+		return response.data.data.toppings;
+	} catch (err) {
+		console.error('ERR_CONFIG GET TOPPINGS:', err);
+	}
+}
+
 //*------------------------------  Get Product by Id  ------------------------------*//
 export async function getTopping(id) {
 	try {
@@ -172,7 +194,7 @@ export async function updateToppingImg(inputData, id) {
 	}
 }
 
-//*------------------------------  Update Product  ------------------------------*//
+//*------------------------------  Update Topping  ------------------------------*//
 export async function updateTopping(inputData, id) {
 	try {
 		const response = await API.patch(`/topping/${id}`, inputData, configJSON);
@@ -257,5 +279,60 @@ export async function updateTransaction(id, status) {
 		return response.data.data;
 	} catch (err) {
 		console.error('ERR_CONFIG CONFIRM TRANSACTION:', err);
+	}
+}
+
+//*------------------------------  Get User Addresses  ------------------------------*//
+export async function getUserAddresses() {
+	try {
+		const response = await API.get(`/my-addresses/`);
+
+		return response.data.data.addresses;
+	} catch (err) {
+		console.error('ERR_CONFIG GET USER ADDRESSES:', err);
+	}
+}
+
+//*------------------------------  Add User Addresses  ------------------------------*//
+export async function addUserAddress(inputData) {
+	try {
+		const response = await API.post(`/address`, inputData, configJSON);
+
+		return response;
+	} catch (err) {
+		console.error('ERR_CONFIG GET USER ADDRESSES:', err);
+	}
+}
+
+//*------------------------------  Update Address  ------------------------------*//
+export async function updateAddress(inputData, id) {
+	try {
+		const response = await API.patch(`/address/${id}`, inputData, configJSON);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE ADDRESS:', err);
+	}
+}
+
+//*------------------------------  Set Primary Address  ------------------------------*//
+export async function setPrimaryAddress(id) {
+	try {
+		const response = await API.patch(`/setPrimaryAddress/${id}`);
+
+		return response.data.data;
+	} catch (err) {
+		console.error('ERR_CONFIG UPDATE ADDRESS:', err);
+	}
+}
+
+//*------------------------------  Delete Address  ------------------------------*//
+export async function deleteAddress(id) {
+	try {
+		const response = await API.delete(`/address/${id}`);
+
+		return response;
+	} catch (err) {
+		console.error('ERR_CONFIG DELETE ADDRESS:', err);
 	}
 }
