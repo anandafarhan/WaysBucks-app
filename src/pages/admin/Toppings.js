@@ -3,7 +3,7 @@ import { Button, Col, Image, Row, Table } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
-import { deleteTopping, getToppings } from '../../config/server';
+import { deleteTopping, getToppings, updateTopping } from '../../config/server';
 
 function Toppings() {
 	const title = 'List of Toppings';
@@ -28,12 +28,9 @@ function Toppings() {
 
 	const initialModal = { show: false, id: '', name: '' };
 	const [modalConfirm, setModalConfirm] = useState(initialModal);
+	const [modalStatus, setModalStatus] = useState(initialModal);
 	function handleConfirmModal(id, name) {
 		setModalConfirm({ show: true, id, name });
-	}
-
-	function handleClose() {
-		setModalConfirm(initialModal);
 	}
 
 	async function handleDelete(id) {
@@ -41,6 +38,24 @@ function Toppings() {
 		await deleteTopping(id);
 		setModalConfirm(initialModal);
 		setWait(false);
+	}
+
+	async function handleChangeStatus(action, id) {
+		setWait(true);
+		switch (action) {
+			case 'setAvailable':
+				await updateTopping({ status: 1 }, id);
+				setModalStatus(initialModal);
+				return setWait(false);
+
+			case 'setNotAvailable':
+				await updateTopping({ status: 0 }, id);
+				setModalStatus(initialModal);
+				return setWait(false);
+
+			default:
+				return new Error();
+		}
 	}
 
 	useEffect(() => {
@@ -74,6 +89,7 @@ function Toppings() {
 							<th>Topping Name</th>
 							<th>Price</th>
 							<th>Sold</th>
+							<th width='150px'>Status</th>
 							<th width='200px'>Action</th>
 						</tr>
 					</thead>
@@ -95,6 +111,9 @@ function Toppings() {
 								<td>{topping.name}</td>
 								<td>{formatPrice(topping.price)}</td>
 								<td>{topping.TransactionToppings.length}</td>
+								<td className={topping.status ? 'text-scs' : 'text-cancel'}>
+									{topping.status ? 'Available' : 'Not Available'}
+								</td>
 								<td>
 									<div className='d-flex justify-content-evenly flex-column'>
 										<Button
@@ -105,6 +124,39 @@ function Toppings() {
 										>
 											Edit
 										</Button>
+										{topping.status ? (
+											<Button
+												variant='danger'
+												size='sm'
+												className='mb-1'
+												onClick={() =>
+													setModalStatus({
+														show: true,
+														id: topping.id,
+														name: topping.name,
+														action: 'setNotAvailable',
+													})
+												}
+											>
+												Set as Not Available
+											</Button>
+										) : (
+											<Button
+												variant='success'
+												size='sm'
+												className='mb-1'
+												onClick={() =>
+													setModalStatus({
+														show: true,
+														id: topping.id,
+														name: topping.name,
+														action: 'setAvailable',
+													})
+												}
+											>
+												Set as Available
+											</Button>
+										)}
 										<Button
 											variant='danger'
 											size='sm'
@@ -127,7 +179,17 @@ function Toppings() {
 				variant='danger'
 				actionName='Delete!'
 				action={() => handleDelete(modalConfirm.id)}
-				handleClose={handleClose}
+				handleClose={() => setModalConfirm(initialModal)}
+			/>
+
+			<ConfirmModal
+				show={modalStatus.show}
+				name={modalStatus.name}
+				body={`You're about to change product ${modalStatus.name} status!`}
+				variant='danger'
+				actionName='Change Status'
+				action={() => handleChangeStatus(modalStatus.action, modalStatus.id)}
+				handleClose={() => setModalStatus(initialModal)}
 			/>
 		</div>
 	);

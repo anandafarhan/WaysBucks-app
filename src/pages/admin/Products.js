@@ -3,7 +3,7 @@ import { Button, Table, Image, Row, Col } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
-import { deleteProduct, getProducts } from '../../config/server';
+import { deleteProduct, getProducts, updateProduct } from '../../config/server';
 
 function Products() {
 	const title = 'List of Products';
@@ -12,6 +12,7 @@ function Products() {
 	const [wait, setWait] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [products, setProducts] = useState(null);
+
 	function formatPrice(price) {
 		return new Intl.NumberFormat('id-ID', {
 			style: 'currency',
@@ -28,19 +29,31 @@ function Products() {
 
 	const initialModal = { show: false, id: '', name: '' };
 	const [modalConfirm, setModalConfirm] = useState(initialModal);
-	function handleConfirmModal(id, name) {
-		setModalConfirm({ show: true, id, name });
-	}
-
-	function handleClose() {
-		setModalConfirm(initialModal);
-	}
+	const [modalStatus, setModalStatus] = useState(initialModal);
 
 	async function handleDelete(id) {
 		setWait(true);
 		await deleteProduct(id);
 		setModalConfirm(initialModal);
 		setWait(false);
+	}
+
+	async function handleChangeStatus(action, id) {
+		setWait(true);
+		switch (action) {
+			case 'setAvailable':
+				await updateProduct({ status: 1 }, id);
+				setModalStatus(initialModal);
+				return setWait(false);
+
+			case 'setNotAvailable':
+				await updateProduct({ status: 0 }, id);
+				setModalStatus(initialModal);
+				return setWait(false);
+
+			default:
+				return new Error();
+		}
 	}
 
 	useEffect(() => {
@@ -74,6 +87,7 @@ function Products() {
 							<th>Product Name</th>
 							<th>Price</th>
 							<th>Sold</th>
+							<th width='150px'>Status</th>
 							<th width='200px'>Action</th>
 						</tr>
 					</thead>
@@ -85,9 +99,7 @@ function Products() {
 									<td>
 										<Image
 											src={
-												product.image
-													? product.image
-													: `${process.env.PUBLIC_URL}/assets/img/icons/product.svg`
+												product.image ? product.image : `${process.env.PUBLIC_URL}/assets/img/icons/product.svg`
 											}
 											alt={product.name}
 											width='100%'
@@ -98,10 +110,10 @@ function Products() {
 									<td>
 										{product.TransactionProducts.length < 1
 											? 0
-											: product.TransactionProducts.reduce(
-													(a, b) => parseInt(a) + parseInt(b.qty),
-													0
-											  )}
+											: product.TransactionProducts.reduce((a, b) => parseInt(a) + parseInt(b.qty), 0)}
+									</td>
+									<td className={product.status ? 'text-scs' : 'text-cancel'}>
+										{product.status ? 'Available' : 'Not Available'}
 									</td>
 									<td>
 										<div className='d-flex justify-content-evenly flex-column'>
@@ -113,11 +125,44 @@ function Products() {
 											>
 												Edit
 											</Button>
+											{product.status ? (
+												<Button
+													variant='danger'
+													size='sm'
+													className='mb-1'
+													onClick={() =>
+														setModalStatus({
+															show: true,
+															id: product.id,
+															name: product.name,
+															action: 'setNotAvailable',
+														})
+													}
+												>
+													Set as Not Available
+												</Button>
+											) : (
+												<Button
+													variant='success'
+													size='sm'
+													className='mb-1'
+													onClick={() =>
+														setModalStatus({
+															show: true,
+															id: product.id,
+															name: product.name,
+															action: 'setAvailable',
+														})
+													}
+												>
+													Set as Available
+												</Button>
+											)}
 											<Button
 												variant='danger'
 												size='sm'
 												className='mb-1'
-												onClick={() => handleConfirmModal(product.id, product.name)}
+												onClick={() => setModalConfirm({ show: true, id: product.id, name: product.name })}
 											>
 												Delete
 											</Button>
@@ -136,7 +181,16 @@ function Products() {
 				variant='danger'
 				actionName='Delete!'
 				action={() => handleDelete(modalConfirm.id)}
-				handleClose={handleClose}
+				handleClose={() => setModalConfirm(initialModal)}
+			/>
+			<ConfirmModal
+				show={modalStatus.show}
+				name={modalStatus.name}
+				body={`You're about to change product ${modalStatus.name} status!`}
+				variant='danger'
+				actionName='Change Status'
+				action={() => handleChangeStatus(modalStatus.action, modalStatus.id)}
+				handleClose={() => setModalStatus(initialModal)}
 			/>
 		</div>
 	);
