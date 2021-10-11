@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //*------------------------------  Initiate Axios  ------------------------------*//
-const baseURL = 'http://localhost:5000/api/v1';
+const baseURL = 'https://afr-waysbucks.herokuapp.com/api/v1';
 
 export const API = axios.create({
 	baseURL,
