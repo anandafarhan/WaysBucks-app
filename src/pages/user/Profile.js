@@ -17,7 +17,7 @@ function Profile() {
 	const [state, dispatch] = useContext(AppContext);
 	const title = 'Profile';
 	document.title = `Waysbucks | ${state.user.name ? state.user.name : title}`;
-	const [transactions, setTransactions] = useState(null);
+	const [transactions, setTransactions] = useState([]);
 	const [editMode, setEditMode] = useState(false);
 	const [userData, setUserData] = useState({});
 	const [preview, setPreview] = useState(null);
@@ -58,11 +58,11 @@ function Profile() {
 	async function myTransaction() {
 		const response = await getUserTransactions();
 		setTransactions(response);
+		console.log(response);
 	}
 
 	async function loadAddress() {
 		const response = await getUserAddresses();
-		console.log(response);
 		setAddresses(response);
 	}
 
@@ -286,17 +286,17 @@ function Profile() {
 										className='d-flex flex-column text-overide overflow-auto'
 										style={{
 											height: '270px',
-											justifyContent: transaction.transactionProducts.length <= 1 ? 'center' : '',
+											justifyContent: transaction.TransactionProducts.length <= 1 ? 'center' : '',
 										}}
 										md={9}
 									>
-										{transaction.transactionProducts.map((transactionProduct) => {
+										{transaction.TransactionProducts.map((transactionProduct) => {
 											const date = new Date(transaction.createdAt);
 											return (
 												<Row id='product' key={transactionProduct.id} className='my-1'>
 													<Col md={3}>
 														<Image
-															src={transactionProduct.product.image}
+															src={transactionProduct.Product.image}
 															style={{
 																width: '80px',
 																height: '100px',
@@ -307,22 +307,22 @@ function Profile() {
 														/>
 													</Col>
 													<Col md={9}>
-														<h5 className='mb-0'>{transactionProduct.product.name}</h5>
+														<h5 className='mb-0'>{transactionProduct.Product.name}</h5>
 														<span style={{ fontSize: '12px' }}>
 															<strong>{days[date.getDay()]}</strong>, {date.getDate()} {months[date.getMonth()]}{' '}
 															{date.getFullYear()}
 														</span>
 														<p className='mb-0' style={{ fontSize: '13px' }}>
-															{transactionProduct.transactionToppings.length < 1 ? (
+															{transactionProduct.TransactionToppings.length < 1 ? (
 																<>
 																	<span className='text-overide-2'>No Topping</span>
 																</>
 															) : (
 																<>
 																	<span className='fw-bold text-overide-2'>Topping: </span>
-																	{transactionProduct.transactionToppings
-																		.map((topping) => topping.topping.name)
-																		.join(', ')}
+																	{transactionProduct.TransactionToppings.map(
+																		(topping) => topping.Topping.name
+																	).join(', ')}
 																</>
 															)}
 														</p>
@@ -334,9 +334,9 @@ function Profile() {
 															<span>
 																Subtotal :{' '}
 																{formatPrice(
-																	transactionProduct.transactionToppings
-																		.map((selectedTopping) => selectedTopping.topping.price)
-																		.reduce((prev, curr) => prev + curr, transactionProduct.product.price) *
+																	transactionProduct.TransactionToppings.map(
+																		(selectedTopping) => selectedTopping.Topping.price
+																	).reduce((prev, curr) => prev + curr, transactionProduct.Product.price) *
 																		transactionProduct.qty
 																)}
 															</span>

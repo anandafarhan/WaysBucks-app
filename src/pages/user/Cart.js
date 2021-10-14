@@ -85,19 +85,19 @@ function Cart(props) {
 		if (carts.length > 0) {
 			if (preview) {
 				setAlert(false);
-				const transactionProducts = [];
+				const TransactionProducts = [];
 
 				carts.forEach((product) => {
-					const transactionToppings = [];
+					const TransactionToppings = [];
 					product.toppings.forEach((topping) =>
-						transactionToppings.push({
+						TransactionToppings.push({
 							toppingId: topping.id,
 						})
 					);
-					transactionProducts.push({
+					TransactionProducts.push({
 						productId: product.id,
 						qty: product.qty,
-						transactionToppings,
+						TransactionToppings,
 					});
 				});
 
@@ -109,7 +109,7 @@ function Cart(props) {
 					form.set('postCode', formData.postCode);
 					form.set('address', formData.address);
 					form.set('income', total);
-					form.set('transactionProducts', JSON.stringify(transactionProducts));
+					form.set('TransactionProducts', JSON.stringify(TransactionProducts));
 					form.set('attachment', formData.attachment[0], formData.attachment[0].name);
 				} catch (error) {}
 
