@@ -47,11 +47,11 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 						<ListGroup variant='flush'>
 							<ListGroup.Item>
 								<strong className='text-overide-2'>Full Name : </strong>
-								{payload.user.fullName}
+								{payload.User.fullName}
 							</ListGroup.Item>
 							<ListGroup.Item>
 								<strong className='text-overide-2'>Email : </strong>
-								{payload.user.email}
+								{payload.User.email}
 							</ListGroup.Item>
 						</ListGroup>
 						<h3 className='mt-4 text-overide'>Shipping Detail</h3>
@@ -91,7 +91,7 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 						<div className='px-2'>
 							{!payload
 								? ''
-								: payload.transactionProducts.map((transactionProduct) => (
+								: payload.TransactionProducts.map((transactionProduct) => (
 										<Row
 											style={{
 												borderRadius: '10px',
@@ -105,7 +105,7 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 												<Row id='product' key={transactionProduct.id} className='my-1'>
 													<Col md={3}>
 														<Image
-															src={transactionProduct.product.image}
+															src={transactionProduct.Product.image}
 															style={{
 																width: '80px',
 																height: '100px',
@@ -116,18 +116,18 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 														/>
 													</Col>
 													<Col md={9}>
-														<h5 className=''>{transactionProduct.product.name}</h5>
+														<h5 className=''>{transactionProduct.Product.name}</h5>
 														<p className='mb-0' style={{ fontSize: '13px' }}>
-															{transactionProduct.transactionToppings.length < 1 ? (
+															{transactionProduct.TransactionToppings.length < 1 ? (
 																<>
 																	<span className='text-overide-2'>No Topping</span>
 																</>
 															) : (
 																<>
 																	<span className='fw-bold text-overide-2'>Topping: </span>
-																	{transactionProduct.transactionToppings
-																		.map((topping) => topping.topping.name)
-																		.join(', ')}
+																	{transactionProduct.TransactionToppings.map(
+																		(topping) => topping.Topping.name
+																	).join(', ')}
 																</>
 															)}
 														</p>
@@ -139,9 +139,9 @@ function TransactionDetail({ show, payload, handleClose, handleReceive }) {
 															<span>
 																Subtotal :{' '}
 																{formatPrice(
-																	transactionProduct.transactionToppings
-																		.map((selectedTopping) => selectedTopping.topping.price)
-																		.reduce((prev, curr) => prev + curr, transactionProduct.product.price) *
+																	transactionProduct.TransactionToppings.map(
+																		(selectedTopping) => selectedTopping.Topping.price
+																	).reduce((prev, curr) => prev + curr, transactionProduct.Product.price) *
 																		transactionProduct.qty
 																)}
 															</span>
